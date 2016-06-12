@@ -13,9 +13,18 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+import os
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic.base import TemplateView
+admin.autodiscover()
 
 urlpatterns = [
+    url(r'^$', TemplateView.as_view(template_name='index.html'), name='index_page'),
+    url(r'^api/', include('rest_root.urls')),
     url(r'^admin/', include(admin.site.urls)),
-]
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^api-auth/', include('rest_framework.urls',namespace='rest_framework')),
+] + static('archive/', document_root=settings.MEDIA_ROOT)

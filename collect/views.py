@@ -14,7 +14,16 @@ from collect.models import *
 def collect_root(request, format=None):
     return Response({
         'card': reverse('card-list', request=request, format=format),
+        'manacost': reverse('manacost-list', request=request, format=format),
     })
+
+
+class ManaCostViewSet(viewsets.ModelViewSet):
+    """
+    Get list of all mana costs in system
+    """
+    queryset = ManaCost.objects.all()
+    serializer_class = ManaCostSerializer
 
 
 class CardsViewSet(viewsets.ModelViewSet):

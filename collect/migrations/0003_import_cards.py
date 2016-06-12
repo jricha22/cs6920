@@ -88,7 +88,7 @@ def undo_import_cards(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('collect', '0001_initial'),
+        ('collect', '0002_auto_20160612_1333'),
     ]
 
     operations = [

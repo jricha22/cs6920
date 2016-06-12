@@ -64,8 +64,8 @@ class Card(models.Model):
     number = models.CharField(max_length=32)
     power_text = models.CharField(max_length=32)
     toughness_text = models.CharField(max_length=32)
-    power = models.IntegerField(default=True, null=True)
-    toughness = models.IntegerField(default=True, null=True)
+    power = models.IntegerField(blank=True, null=True)
+    toughness = models.IntegerField(blank=True, null=True)
 
     class Meta:
         ordering = ['name']

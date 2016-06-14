@@ -11,18 +11,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="static/bower_components/html5-boilerplate/dist/css/normalize.css">
   <link rel="stylesheet" href="static/bower_components/html5-boilerplate/dist/css/main.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
 
     <script>
         var ts = (new Date()).getTime(); //Used to prevent JS/CSS caching for development testing
     </script>
-  <link rel="stylesheet" href="static/app.css?<%=ts %>">
+    <link rel="stylesheet" href="static/app.css?<%=ts %>">
   <script src="static/bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
 <body>
-  <ul class="menu">
+  <!--<ul class="menu">
     <li><a href="#!/view1">Browse Cards</a></li>
     <li><a href="#!/view2">view2</a></li>
-  </ul>
+  </ul> --->
+   <div ng-include="'static/navbar.html'"></div>
 
   <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -36,12 +43,14 @@
   <script src="static/bower_components/angular/angular.js"></script>
   <script src="static/bower_components/angular-route/angular-route.js"></script>
   <script src="static/bower_components/angular-route/angular-route.js"></script>
-  <script src="static/bower_components/angular-resource/angular-resource.js"></script>
   <script src="static/app.js"></script>
   <script src="static/view1/view1.js"></script>
   <script src="static/view2/view2.js"></script>
   <script src="static/components/version/version.js"></script>
   <script src="static/components/version/version-directive.js"></script>
   <script src="static/components/version/interpolate-filter.js"></script>
+  <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+  <script src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.11/angular-resource.js"></script>
 </body>
 </html>

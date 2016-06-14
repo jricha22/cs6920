@@ -1,1 +1,21 @@
-<p>This is the partial for view 1.</p>
+<h3>Magic:The Gathering Card Search</h3>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Mana Cost</th>
+    <th>Converted Mana Cost</th>
+    <th>Type</th>
+    <th>Rarity</th>
+    <th>Power</th>
+    <th>Toughness</th>
+  </tr>
+  <tr ng-repeat="card in data.cards">
+    <td>{{card.name}}</td>
+    <td>{{card.mana_cost}}</td>
+    <td>{{card.cmc}}</td>
+    <td>{{card.type}}</td>
+    <td>{{card.rarity}}</td>
+    <td>{{card.power}}</td>
+    <td>{{card.toughness}}</td>
+  </tr>
+</table>

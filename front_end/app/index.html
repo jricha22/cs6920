@@ -9,8 +9,10 @@
   <title>MTG Collectibles</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!---
   <link rel="stylesheet" href="static/bower_components/html5-boilerplate/dist/css/normalize.css">
   <link rel="stylesheet" href="static/bower_components/html5-boilerplate/dist/css/main.css">
+  --->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -22,7 +24,7 @@
         var ts = (new Date()).getTime(); //Used to prevent JS/CSS caching for development testing
     </script>
     <link rel="stylesheet" href="static/app.css?<%=ts %>">
-  <script src="static/bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+ <!-- <script src="static/bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script> -->
 </head>
 <body>
   <!--<ul class="menu">
@@ -37,12 +39,12 @@
 
   <div ng-view></div>
 
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
-  -->
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.11/angular-route.js"></script>
+  <!--
   <script src="static/bower_components/angular/angular.js"></script>
   <script src="static/bower_components/angular-route/angular-route.js"></script>
-  <script src="static/bower_components/angular-route/angular-route.js"></script>
+  -->
   <script src="static/app.js"></script>
   <script src="static/view1/view1.js"></script>
   <script src="static/view2/view2.js"></script>

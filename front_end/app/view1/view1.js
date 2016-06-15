@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('myApp.view1', ['ngRoute', 'ngResource'])
+angular.module('myApp.view1', ['ngRoute', 'ngResource', 'ui.bootstrap'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/view1', {
     templateUrl: 'static/view1/view1.html',
-    controller: 'CardCtrl1'
+    controller: 'View1Ctrl'
   });
 }])
 
@@ -13,21 +13,42 @@ angular.module('myApp.view1', ['ngRoute', 'ngResource'])
 
 }])
 
-.controller('CardCtrl1', ['$scope', 'MTGCards', function($scope, MTGCards) {
-  // Instantiate an object to store scope data in
+.controller('PaginationCtrl', ['$scope', 'MTGCards', function($scope, MTGCards) {
+  
   $scope.data = {};
+  $scope.filteredCards = {};
+  $scope.totalItems = 10;
+  $scope.currentPage = 1;
+  $scope.itemsPerPage = 10;
+  $scope.maxSize = 5;
 
-  MTGCards.get(function(response) {
-    // Assign the response INSIDE the callback
-    $scope.data.cards = response.results;
-    console.log(response)
-  });
+  $scope.setPage = function (pageNo) {
+    $scope.currentPage = pageNo;
+  };
+
+  $scope.pageChanged = function() {
+    console.log('Page changed to: ' + $scope.currentPage);
+  };
+  
+  $scope.pageCount = function () {
+    return Math.ceil($scope.totalItems / $scope.itemsPerPage);
+  };
+
+    $scope.$watch('currentPage + itemsPerPage', function() {
+        $scope.data = MTGCards.get();
+        $scope.data.$promise.then(function (result) {
+          $scope.data = result;
+          $scope.totalItems = $scope.data.results.length;
+          var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
+          var end = begin + $scope.itemsPerPage;
+          $scope.filteredCards = $scope.data.results.slice(begin, end);
+        });
+    })
 }]);
-
 
 // angular-resource for getting JSON data from the MTG API
 angular.module('myApp.services', ['ngResource'])
   .factory('MTGCards', function($resource){
-      //change resource url in production
-    return $resource('/api/collect/card/', {})
+      //change resource url in
+      return $resource('/api/collect/card/?limit=280', {})
 });

@@ -17,10 +17,15 @@ angular.module('myApp.view1', ['ngRoute', 'ngResource', 'ui.bootstrap'])
   
   $scope.data = {};
   $scope.filteredCards = {};
-  $scope.totalItems = 10;
+  $scope.totalItems = $scope.filteredCards.length;
   $scope.currentPage = 1;
   $scope.itemsPerPage = 10;
   $scope.maxSize = 5;
+
+  //Sorting angular variables
+  $scope.sortType     = 'name';   // set the default sort type
+  $scope.sortReverse  = false;    // set the default sort order
+  $scope.searchCards   = '';      // set the default search/filter term
 
   $scope.setPage = function (pageNo) {
     $scope.currentPage = pageNo;
@@ -30,25 +35,33 @@ angular.module('myApp.view1', ['ngRoute', 'ngResource', 'ui.bootstrap'])
     console.log('Page changed to: ' + $scope.currentPage);
   };
   
-  $scope.pageCount = function () {
-    return Math.ceil($scope.totalItems / $scope.itemsPerPage);
-  };
+  $scope.pageCount = Math.ceil($scope.totalItems / $scope.itemsPerPage);
+  
+  $scope.$watch('searchCards', function () {
+		$scope.totalItems = $scope.filteredCards.length;
+		$scope.pageCount = Math.ceil($scope.totalItems / $scope.itemsPerPage);
+		$scope.currentPage = 1;
+  }, true);
 
-    $scope.$watch('currentPage + itemsPerPage', function() {
-        $scope.data = MTGCards.get();
-        $scope.data.$promise.then(function (result) {
-          $scope.data = result;
-          $scope.totalItems = $scope.data.results.length;
-          var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
-          var end = begin + $scope.itemsPerPage;
-          $scope.filteredCards = $scope.data.results.slice(begin, end);
-        });
-    })
+  $scope.init = function() {
+      $scope.data = []
+      $scope.count = MTGCards.get({lim : 1});
+
+      $scope.count.$promise.then(function (response) {
+          $scope.data = MTGCards.get({lim : response['count']});
+
+          $scope.data.$promise.then(function (response) {
+              $scope.data = response;
+              $scope.totalItems = $scope.data.results.length;
+          });
+      });
+  }
+
+  $scope.init();
 }]);
 
 // angular-resource for getting JSON data from the MTG API
 angular.module('myApp.services', ['ngResource'])
   .factory('MTGCards', function($resource){
-      //change resource url in
-      return $resource('/api/collect/card/?limit=280', {})
+      return $resource('/api/collect/card/?limit=:lim', {lim : '@lim'})
 });

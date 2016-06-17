@@ -1,6 +1,7 @@
-<h3>Magic:The Gathering Card Search</h3>
 <div class="browseCardsTable" ng-controller="PaginationCtrl">
-    <form>
+    <h3>Magic:The Gathering Card Search</h3>
+    <br/>
+    <form class="cardSearchBar">
     <div class="form-group">
       <div class="input-group">
         <div class="input-group-addon"><i class="fa fa-search"></i></div>
@@ -10,7 +11,7 @@
       </div>
     </div>
     </form>
-    <table id="card_browse" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <table id="card_browse" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
         <thead>
             <tr>
                 <th> <a ng-click="sortType = 'name'; sortReverse = !sortReverse"> Name

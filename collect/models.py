@@ -15,6 +15,8 @@ class ManaCost(models.Model):
         (BLUE, BLUE),
         (WHITE, WHITE),
     )
+    COLOR_LABEL = {BLACK: 'B', WHITE: 'W', BLUE: 'U', RED: 'R', GREEN: 'G'}
+
     color = models.CharField(max_length=9, choices=COLOR_CHOICES, default=COLORLESS)
     count = models.IntegerField(default=0)
 
@@ -22,7 +24,7 @@ class ManaCost(models.Model):
         ordering = ['color', 'count']
 
     def __unicode__(self):
-        return str(self.count) + " " + self.color
+        return str(self.count) if self.color == self.COLORLESS else self.COLOR_LABEL[self.color] * self.count
 
 class Card(models.Model):
     """
@@ -66,6 +68,13 @@ class Card(models.Model):
     toughness_text = models.CharField(max_length=32)
     power = models.IntegerField(blank=True, null=True)
     toughness = models.IntegerField(blank=True, null=True)
+
+    @property
+    def mana_string(self):
+        result = ''
+        for cost in self.mana_cost.all():
+            result += str(cost)
+        return ''.join(sorted(result))
 
     class Meta:
         ordering = ['name']

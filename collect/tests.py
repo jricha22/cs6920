@@ -23,6 +23,11 @@ class CardTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.card.name, response.data['name'])
 
+    def test_card_detail_mana_string(self):
+        response = self.client.get(reverse('card-detail', args=[self.card.id]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual('1W', response.data['mana_string'])
+
     def test_card_pagination_length(self):
         response = self.client.get(reverse('card-list'), {'limit': 10})
         self.assertEqual(response.status_code, status.HTTP_200_OK)

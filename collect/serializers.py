@@ -10,5 +10,7 @@ class ManaCostSerializer(serializers.ModelSerializer):
 
 class CardSerializer(serializers.ModelSerializer):
     mana_cost = ManaCostSerializer(read_only=True, many=True)
+    mana_string = serializers.ReadOnlyField()
+
     class Meta:
         model = Card

@@ -28,13 +28,9 @@ class ManaCostViewSet(viewsets.ModelViewSet):
 class CardsViewSet(viewsets.ModelViewSet):
     """
     Get list of all cards in system and associated metadata. Accepts filter query params:
-
     ?color=Red,Blue returns all red or blue cards
-
     ?manalimt=5 returnes cards with cost 5 or less
-
     ?color=Red,Blue&manalimit=5&limit=10 returns the first 10 red or blue cards with cost 5 or less
-
     ?color=Red,Blue&manalimit=5&limit=10&offset=10 returns 10 cards red or blue cards with cost 5 or less, skipping the first 10 results
     """
     serializer_class = CardSerializer
@@ -45,8 +41,6 @@ class CardsViewSet(viewsets.ModelViewSet):
         if mana_limit is not None:
             queryset = queryset.filter(cmc__lte=mana_limit)
         color = self.request.query_params.get('color', None)
-        print color
-        print type(color)
         if color is not None:
             queryset = queryset.filter(mana_cost__color__in=color.split(','))
         return queryset

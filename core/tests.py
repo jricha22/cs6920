@@ -49,6 +49,6 @@ class LoginTest(APITestCase):
         self.assertEqual('jdoe', response.data['username'])
 
     def test_credentials_bad(self):
-        response = self.client.post(reverse('login'), {'badusername': 'nobody', 'password': 'idonthaveone'})
+        response = self.client.post(reverse('login'), {'username': 'nobody', 'password': 'idonthaveone'})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 

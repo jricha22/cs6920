@@ -33,6 +33,32 @@ class CardTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.card_ten.name, response.data['results'][0]['name'])
 
+    def test_card_list_cost_filter(self):
+        response = self.client.get(reverse('card-list'), {'manalimit': 1})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(len(response.data['results'])):
+            self.assertTrue(response.data['results'][i]['cmc'] <= 1)
+
+    def test_card_list_color_filter_multiple(self):
+        response = self.client.get(reverse('card-list'), {'color': 'Red,Blue'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(len(response.data['results'])):
+            card_status = False
+            for cost in response.data['results'][i]['mana_cost']:
+                if cost["color"] in ['Red', 'Blue']:
+                    card_status = True
+            self.assertTrue(card_status)
+
+    def test_card_list_color_filter_single(self):
+        response = self.client.get(reverse('card-list'), {'color': 'Colorless'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(len(response.data['results'])):
+            card_status = False
+            for cost in response.data['results'][i]['mana_cost']:
+                if cost["color"] in ['Colorless']:
+                    card_status = True
+            self.assertTrue(card_status)
+
 
 class ManaCostTest(APITestCase):
     def setUp(self):

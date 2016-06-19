@@ -22,9 +22,9 @@
                 <th> <a ng-click="sortType = 'name'; sortReverse = !sortReverse"> Name
                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"> </span>
                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
-                <th> <a ng-click="sortType = 'mana_cost'; sortReverse = !sortReverse"> Mana Cost
-                        <span ng-show="sortType == 'mana_cost' && !sortReverse" class="fa fa-caret-down"> </span>
-                        <span ng-show="sortType == 'mana_cost' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
+                <th> <a ng-click="sortType = 'mana_string'; sortReverse = !sortReverse"> Mana Cost
+                        <span ng-show="sortType == 'mana_string' && !sortReverse" class="fa fa-caret-down"> </span>
+                        <span ng-show="sortType == 'mana_string' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
                 <th> <a ng-click="sortType = 'cmc'; sortReverse = !sortReverse"> Converted Mana Cost
                         <span ng-show="sortType == 'cmc' && !sortReverse" class="fa fa-caret-down"></span>
                         <span ng-show="sortType == 'cmc' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
@@ -45,7 +45,7 @@
         <tbody>
             <tr ng-repeat="card in myData | orderBy:sortType:sortReverse">
                 <td>{{card.name}}</td>
-                <td>{{card.mana_cost}}</td>
+                <td>{{card.mana_string}}</td>
                 <td>{{card.cmc}}</td>
                 <td>{{card.type}}</td>
                 <td>{{card.rarity}}</td>

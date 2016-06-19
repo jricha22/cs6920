@@ -8,10 +8,7 @@ angular.module('myApp', [
   'myApp.login',
   'myApp.login_required',
   'myApp.version',
-  'ngResource',
-  'ui.bootstrap',
-  'ui.grid',
-  'ui.grid.pagination'
+  'ui.bootstrap'
 ]).
 config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');

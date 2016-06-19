@@ -43,7 +43,7 @@ class MTGSettings(APIView):
 
 class ProfileView(APIView):
     """
-    GRS user profile
+    MTG user profile
     """
 
     @staticmethod
@@ -53,7 +53,7 @@ class ProfileView(APIView):
 
 class LoginView(APIView):
     """
-    GRS login
+    MTG login
     """
     permission_classes = (AllowAny, )
 

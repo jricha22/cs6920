@@ -5,6 +5,68 @@ tfoot input {
     box-sizing: border-box;
 }
 
+h3 {
+    color: #adadad;
+}
+
+.browseCardsTable {
+    width: 80%;
+    margin: 0 auto;
+    display: block;
+}
+
+.pagination-sm {
+    float: right;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.cardSearchBar {
+    width: 80%;
+    float: left;
+}
+
+#card_browse {
+    margin-bottom: 14px;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+th a {
+    color: #000000;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #b1b1b1;
+}
+
+.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+   background-color: #f0f0f0;
+}
+
+.pagination>li.active>a {
+  border-color: #989898;
+  background: #b1b1b1;
+  color: #fff;
+}
+
+.pagination>li >a {
+  color: #000000;
+}
+
+.pagination > li > a:hover, .pagination > li > a:focus, .pagination > li > span:focus,
+.pagination > li > span:hover, .pagination>li.active > a.hover  {
+  border-color: #222222;
+  background: #222222;
+  color: #fff;
+}
+
+body {
+    background-color: #222222;
+}
+
 /* Fix overflow on right of bootstrap navbar */
 .navbar-nav.navbar-right:last-child {
 	margin-right: 15px;

@@ -1,11 +1,10 @@
 'use strict';
 
-angular.module('myApp.view1', ['ngRoute', 'ngResource', 'ui.bootstrap'])
-
+angular.module('myApp.view1', ['ngRoute', 'ui.grid', 'ui.grid.pagination', 'ui.bootstrap'])
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/view1', {
     templateUrl: 'static/view1/view1.html',
-    controller: 'View1Ctrl'
+    controller: 'PaginationCtrl'
   });
 }])
 
@@ -13,55 +12,88 @@ angular.module('myApp.view1', ['ngRoute', 'ngResource', 'ui.bootstrap'])
 
 }])
 
-.controller('PaginationCtrl', ['$scope', 'MTGCards', function($scope, MTGCards) {
-  
-  $scope.data = {};
-  $scope.filteredCards = {};
-  $scope.totalItems = $scope.filteredCards.length;
-  $scope.currentPage = 1;
-  $scope.itemsPerPage = 10;
-  $scope.maxSize = 5;
+.controller('PaginationCtrl', function($scope, $http) {
 
-  //Sorting angular variables
-  $scope.sortType     = 'name';   // set the default sort type
-  $scope.sortReverse  = false;    // set the default sort order
-  $scope.searchCards   = '';      // set the default search/filter term
+    $scope.filterOptions = {
+        filterColor: "",
+        filterMana: "",
+        searchCards: ''      // set the default search/filter term
+    };
 
-  $scope.setPage = function (pageNo) {
-    $scope.currentPage = pageNo;
-  };
+    $scope.sortType = 'name';   // set the default sort type
+    $scope.sortReverse = false;    // set the default sort order
+    $scope.myData = [];
+    $scope.totalServerItems = 0;
+    $scope.maxSize = 5;
 
-  $scope.pageChanged = function() {
-    console.log('Page changed to: ' + $scope.currentPage);
-  };
-  
-  $scope.pageCount = Math.ceil($scope.totalItems / $scope.itemsPerPage);
-  
-  $scope.$watch('searchCards', function () {
-		$scope.totalItems = $scope.filteredCards.length;
-		$scope.pageCount = Math.ceil($scope.totalItems / $scope.itemsPerPage);
-		$scope.currentPage = 1;
-  }, true);
+    $scope.pagingOptions = {
+        pageSizes: [10, 50, 100],
+        pageSize: 10,
+        currentPage: 1
+    };
+    
+    $scope.setPage = function (pageNo) {
+        $scope.pagingOptions.currentPage = pageNo;
+    };
 
-  $scope.init = function() {
-      $scope.data = []
-      $scope.count = MTGCards.get({lim : 1});
+    $scope.pageChanged = function() {
+        console.log('Page changed to: ' + $scope.pagingOptions.currentPage);
+    };
+    
+    $scope.setPagingData = function(data){
+        $scope.myData = JSON.parse(JSON.stringify(data.results));
+        $scope.totalServerItems = data['count'];
+        if (!$scope.$$phase) {
+            $scope.$apply();
+        }
+    };
 
-      $scope.count.$promise.then(function (response) {
-          $scope.data = MTGCards.get({lim : response['count']});
+    $scope.getPagedDataAsync = function (pageSize, page, colorText) {
+        setTimeout(function () {
+            var results = generateApiString(pageSize, page, colorText);
+            $http.get(results).success(function (largeLoad) {
+                $scope.setPagingData(largeLoad);
+            });
+        }, 100);
+    };
 
-          $scope.data.$promise.then(function (response) {
-              $scope.data = response;
-              $scope.totalItems = $scope.data.results.length;
-          });
-      });
-  }
+    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 
-  $scope.init();
-}]);
+    function generateApiString(pageSize, page, colorText) {
+        var results = "/api/collect/card.json/?limit=";
+        var reverseOffset = $scope.totalServerItems - page * pageSize;
 
-// angular-resource for getting JSON data from the MTG API
-angular.module('myApp.services', ['ngResource'])
-  .factory('MTGCards', function($resource){
-      return $resource('/api/collect/card/?limit=:lim', {lim : '@lim'})
+        if ($scope.sortReverse) {
+            if (reverseOffset > 0)
+                results += pageSize + "&offset=" + reverseOffset;
+            else
+                results += (reverseOffset+pageSize);
+        } else {
+            results += pageSize + "&offset=" + (page - 1) * pageSize;
+        }
+        if (colorText) {
+            var ft = colorText.replace(/\s+/g, '');
+            results += "&color=" + ft;
+        }
+
+        return results;
+    };
+
+    $scope.$watch('pagingOptions', function (newVal, oldVal) {
+        if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterColor);
+        }
+    }, true);
+
+    $scope.$watch('filterOptions', function (newVal, oldVal) {
+        if (newVal !== oldVal) {
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterColor);
+        }
+    }, true);
+
+    $scope.$watch('sortReverse', function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterColor);
+        }
+    })
 });

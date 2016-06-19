@@ -15,9 +15,16 @@ angular.module('myApp.view1', ['ngRoute', 'ui.grid', 'ui.grid.pagination', 'ui.b
 .controller('PaginationCtrl', function($scope, $http) {
 
     $scope.filterOptions = {
-        filterColor: "",
-        filterMana: "",
-        searchCards: ''      // set the default search/filter term
+        filterColor: {
+            Colorless: false,
+            Black : false,
+            Blue : false,
+            White : false,
+            Red : false,
+            Green : false
+        },
+        filterMana: 15,
+        filterName: ''      // set the default search/filter term
     };
 
     $scope.sortType = 'name';   // set the default sort type
@@ -48,9 +55,9 @@ angular.module('myApp.view1', ['ngRoute', 'ui.grid', 'ui.grid.pagination', 'ui.b
         }
     };
 
-    $scope.getPagedDataAsync = function (pageSize, page, colorText) {
+    $scope.getPagedDataAsync = function (pageSize, page) {
         setTimeout(function () {
-            var results = generateApiString(pageSize, page, colorText);
+            var results = generateApiString(pageSize, page);
             $http.get(results).success(function (largeLoad) {
                 $scope.setPagingData(largeLoad);
             });
@@ -59,7 +66,7 @@ angular.module('myApp.view1', ['ngRoute', 'ui.grid', 'ui.grid.pagination', 'ui.b
 
     $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 
-    function generateApiString(pageSize, page, colorText) {
+    function generateApiString(pageSize, page) {
         var results = "/api/collect/card.json/?limit=";
         var reverseOffset = $scope.totalServerItems - page * pageSize;
 
@@ -71,29 +78,54 @@ angular.module('myApp.view1', ['ngRoute', 'ui.grid', 'ui.grid.pagination', 'ui.b
         } else {
             results += pageSize + "&offset=" + (page - 1) * pageSize;
         }
-        if (colorText) {
-            var ft = colorText.replace(/\s+/g, '');
+
+        results += generateFilterColor();
+/*
+        if ($scope.filterOptions.filterName) {
+            var nameText = $scope.filterOptions.filterName;
+            var ft = nameText.replace(/\s+/g, '');
             results += "&color=" + ft;
         }
-
+ */
+        if ($scope.filterOptions.filterMana) {
+            results += "&manalimit=" + $scope.filterOptions.filterMana;
+        }
         return results;
     };
 
+    function generateFilterColor() {
+        var colorSet = false;
+        var optionString = "";
+        angular.forEach($scope.filterOptions.filterColor,function(value, index){
+            if (value) {
+                if (!colorSet) {
+                    colorSet = true;
+                    optionString += "&color=";
+                }
+                optionString += index + ",";
+            }
+        })
+        if (optionString.lastIndexOf(',') === optionString.length-1) {
+            return optionString.substring(0, optionString.length-1);
+        }
+        return optionString;
+    };
+    
     $scope.$watch('pagingOptions', function (newVal, oldVal) {
         if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterColor);
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
         }
     }, true);
 
     $scope.$watch('filterOptions', function (newVal, oldVal) {
         if (newVal !== oldVal) {
-            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterColor);
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
         }
     }, true);
 
     $scope.$watch('sortReverse', function(newVal, oldVal) {
         if (newVal !== oldVal) {
-            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterColor);
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
         }
     })
 });

@@ -24,6 +24,19 @@ h3 {
 .cardSearchBar {
     width: 80%;
     float: left;
+    margin-bottom: 10px;
+}
+
+input[type=number] {
+    width: 50px;
+}
+
+label {
+    margin-right: 10px;
+}
+
+.manaLimit {
+    margin-left: 30px;
 }
 
 #card_browse {

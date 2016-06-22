@@ -2,13 +2,6 @@
     <h3>Magic:The Gathering Card Search</h3>
     <br/>
     <form class="cardSearchBar">
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon"><i class="fa fa-search"></i></div>
-
-            <input type="text" class="form-control" placeholder="Search card name" ng-model="filterOptions.filterName">
-          </div>
-        </div>
         <form class="manaForm">
             <label ng-repeat="(color, enabled) in filterOptions.filterColor">
                 <input type="checkbox" ng-model="filterOptions.filterColor[color]"> {{color}}
@@ -22,24 +15,12 @@
                 <th> <a ng-click="sortType = 'name'; sortReverse = !sortReverse"> Name
                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"> </span>
                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
-                <th> <a ng-click="sortType = 'mana_string'; sortReverse = !sortReverse"> Mana Cost
-                        <span ng-show="sortType == 'mana_string' && !sortReverse" class="fa fa-caret-down"> </span>
-                        <span ng-show="sortType == 'mana_string' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
-                <th> <a ng-click="sortType = 'cmc'; sortReverse = !sortReverse"> Converted Mana Cost
-                        <span ng-show="sortType == 'cmc' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'cmc' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
-                <th> <a ng-click="sortType = 'type'; sortReverse = !sortReverse"> Type
-                        <span ng-show="sortType == 'type' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'type' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
-                <th> <a ng-click="sortType = 'rarity'; sortReverse = !sortReverse"> Rarity
-                        <span ng-show="sortType == 'rarity' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'rarity' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
-                <th> <a ng-click="sortType = 'power'; sortReverse = !sortReverse"> Power
-                        <span ng-show="sortType == 'power' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'power' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
-                <th> <a ng-click="sortType = 'toughness'; sortReverse = !sortReverse"> Toughness
-                        <span ng-show="sortType == 'toughness' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'toughness' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
+                <th>  Mana Cost </th>
+                <th>  Converted Mana Cost </th>
+                <th>  Type </th>
+                <th>  Rarity </th>
+                <th>  Power </th>
+                <th>  Toughness </th>
              </tr>
         </thead>
         <tbody>

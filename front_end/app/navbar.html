@@ -22,7 +22,7 @@
             <ul class="nav navbar-nav navbar-right" ng-controller="LoginController">
                 <li ng-hide="profile"><p class="navbar-text">Already have an account?</p></li>
                 <li class="dropdown" ng-hide="profile">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="login"><b>Login</b> <span class="caret"></span></a>
                     <ul id="login-dp" class="dropdown-menu">
                         <li>
                             <div class="row">
@@ -32,16 +32,16 @@
                                         <div class="form-group">
                                             <label class="sr-only">Username</label>
                                             <input type="text" class="form-control" ng-model="username" required
-                                                   placeholder="Username">
+                                                   placeholder="Username" id="username">
                                         </div>
                                         <div class="form-group">
                                             <label class="sr-only">Password</label>
                                             <input type="password" class="form-control" ng-model="password"
-                                                   placeholder="Password" required>
+                                                   placeholder="Password" id="password" required>
                                         </div>
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary btn-block">Sign in</button>
-                                            {{ result }}
+                                            <button type="submit" class="btn btn-primary btn-block" id="signin">Sign in</button>
+                                            <div id="my_error">{{ result }}</div>
                                         </div>
                                     </form>
                                 </div>
@@ -49,9 +49,9 @@
                         </li>
                     </ul>
                 </li>
-                <li ng-show="profile"><p class="navbar-text">Welcome {{ first_name }}</p></li>
+                <li ng-show="profile"><p class="navbar-text" id="authuser">Welcome {{ first_name }}</p></li>
                 <li class="dropdown" ng-show="profile">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Logout</b> <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="logout"><b>Logout</b> <span class="caret"></span></a>
                     <ul id="login-dp" class="dropdown-menu">
                         <li>
                             <div class="row">

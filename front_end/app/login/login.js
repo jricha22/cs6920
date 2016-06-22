@@ -20,7 +20,7 @@ angular.module('myApp.login', ['ngRoute'])
             }
         })
             .error(function (error) {
-                $rootScope.isUser = "no";
+
             });
 
         $scope.submit = function () {
@@ -44,7 +44,7 @@ angular.module('myApp.login', ['ngRoute'])
                 $window.location.href = '/#!/static/view1';
             })
                 .error(function (error) {
-                    $scope.result = "I'm sorry, that username and/or password was not correct. Please try again!";
+                    $scope.result = "I'm sorry, that username and or password was not correct. Please try again!";
                     $scope.password = "";
                 });
         }

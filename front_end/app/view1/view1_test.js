@@ -19,11 +19,9 @@ describe('myApp.view1 module', function() {
   describe('view1 controller', function(){
 
     it('should have a defined controller', inject(function($controller) {
-      //spec body
       var PaginationCtrl = $controller('PaginationCtrl');
       expect(PaginationCtrl).toBeDefined();
     }));
-
 
   });
 
@@ -67,10 +65,80 @@ describe('myApp.view1 module', function() {
 
         it('should change value', function() {
             var value1 = element(by.binding('filterOptions.filterMana'));
-         //   element(by.model('filterOptions.filterMana')).setText('3');
+            element(by.model('filterOptions.filterMana')).val('3');
             expect(value1.getText()).toContain('3');
         });
 
     });
-    
+
+    describe('pagination', function(){
+
+        it('pagination buttons should update model', function() {
+            var text = $('#card_browse').find('tbody tr').first().text();
+            var value1 = element(by.id('pagination-next ng-scope'));
+            value1.click();
+            expect( $('#card_browse').find('tbody tr').all()).not.toContain(text);
+
+            var newText = $('#card_browse').find('tbody tr').first().text();
+            expect(text).not.toMatch(newText);
+
+            value1 = element(by.id('pagination-prev ng-scope'));
+            value1.click();
+
+            expect( $('#card_browse').find('tbody tr').all()).toContain(text);
+
+            newText = $('#card_browse').find('tbody tr').first().text();
+            expect(text).toMatch(newText);
+        });
+
+    });
+
+    describe('generateApiString function', function(){
+
+        it('generateApiString should be default configuration', function() {
+
+        });
+
+        it('generateApiString should be form correct api string', function() {
+
+        });
+    });
+
+    describe('$watch functions', function(){
+
+        it('getPagedDataAsync called when page changed', function() {
+
+        });
+
+        it('getPagedDataAsync called when color checkbox checked', function() {
+
+        });
+
+        it('getPagedDataAsync called when mana limit spinner changed', function() {
+
+        });
+
+        it('getPagedDataAsync called Name column sorted', function() {
+
+        });
+    });
+
+    describe('generateFilterColor function', function(){
+
+        it('return string should be blank with no colors checked', function() {
+
+        });
+
+        it('return string should contain black and blue', function() {
+
+        });
+    });
+
+    describe('getPagedDataAsync function', function(){
+
+        it('default load should have nonzero total server items', function() {
+
+        });
+
+    });
 });

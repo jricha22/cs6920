@@ -1,15 +1,11 @@
 'use strict';
 
-angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
+angular.module('myApp.view1', ['ngRoute'])
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/view1', {
     templateUrl: 'static/view1/view1.html',
     controller: 'PaginationCtrl'
   });
-}])
-
-.controller('View1Ctrl', [function() {
-
 }])
 
 .controller('PaginationCtrl', function($scope, $http) {
@@ -34,7 +30,6 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
     $scope.maxSize = 5;
 
     $scope.pagingOptions = {
-        pageSizes: [10, 50, 100],
         pageSize: 10,
         currentPage: 1
     };
@@ -48,20 +43,15 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
     };
     
     $scope.setPagingData = function(data){
-        $scope.myData = JSON.parse(JSON.stringify(data.results));
+        $scope.myData = data.results;
         $scope.totalServerItems = data['count'];
-        if (!$scope.$$phase) {
-            $scope.$apply();
-        }
     };
 
     $scope.getPagedDataAsync = function (pageSize, page) {
-        setTimeout(function () {
             var results = generateApiString(pageSize, page);
             $http.get(results).success(function (largeLoad) {
                 $scope.setPagingData(largeLoad);
             });
-        }, 100);
     };
 
     $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
@@ -87,7 +77,7 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
             results += "&color=" + ft;
         }
  */
-        if ($scope.filterOptions.filterMana) {
+        if ($scope.filterOptions.filterMana != null) {
             results += "&manalimit=" + $scope.filterOptions.filterMana;
         }
         return results;

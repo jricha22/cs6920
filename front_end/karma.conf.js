@@ -9,13 +9,13 @@ module.exports = function(config) {
       'bower_components/angular-route/angular-route.js',
       'bower_components/angular-mocks/angular-mocks.js',
         //trying to get ui.bootstrap to be recognized starting here
-      '//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js',
-      '//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js',
-      '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap.js',
-      '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap-tpls.js',
-      '//cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/3.1.1/ui-grid.min.js',
+      //'//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js',
+      //'//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js',
+      //'//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap.js',
+      //'//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap-tpls.js',
+      //'//cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/3.1.1/ui-grid.min.js',
         //end of scripts added for ui.bootstrap issue
-      'components/**/*.js',
+      'components/version/*.js',
       'view*/**/*.js',
       'login/**/*.js'
     ],

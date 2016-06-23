@@ -18,17 +18,17 @@ describe('myApp.view1 module', function() {
 
   describe('view1 controller', function(){
 
-    it('should have a defined controller', inject(function($controller) {
+    it('should have a defined controller', function($controller) {
       var PaginationCtrl = $controller('PaginationCtrl');
       expect(PaginationCtrl).toBeDefined();
-    }));
+    });
 
   });
 
   describe('color checkboxes', function(){
 
       it('should change state', function() {
-          var value1 = element(by.binding('filterOptions.filterColor.Colorless'));
+          var value1 = angular.element(by.binding('filterOptions.filterColor.Colorless'));
           var value2 = element(by.binding('filterOptions.filterColor.Black'));
           var value3 = element(by.binding('filterOptions.filterColor.Blue'));
           var value4 = element(by.binding('filterOptions.filterColor.White'));

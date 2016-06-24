@@ -118,7 +118,7 @@ describe('myApp.view1 module', function() {
 
         });
 
-        it('getPagedDataAsync called Name column sorted', function() {
+        it('getPagedDataAsync called when Name column sorted', function() {
 
         });
     });

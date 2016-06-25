@@ -7,7 +7,7 @@ angular.module('myApp.login', ['ngRoute'])
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken'
     }])
 
-    .controller('LoginController', ['$rootScope', '$scope', '$http', '$window', function ($rootScope, $scope, $http, $window) {
+    .controller('LoginController', ['$rootScope', '$scope', '$http', '$route', function ($rootScope, $scope, $http, $route) {
         // Check if the user is already logged in
         $http({
             url: "/api/core/profile/",
@@ -45,7 +45,7 @@ angular.module('myApp.login', ['ngRoute'])
                 $scope.username = null;
                 $scope.password = null;
                 $scope.result = null;
-                $window.location.href = '/#!/static/view1';
+                $route.reload();
             })
                 .error(function (error) {
                     $scope.result = "I'm sorry, that username and or password was not correct. Please try again!";
@@ -67,7 +67,7 @@ angular.module('myApp.login', ['ngRoute'])
                 $rootScope.profile = null;
                 $scope.username = null;
                 $scope.password = null;
-                $window.location.href = '/#!/static/view1';
+                $route.reload();
             })
                 .error(function (error) {
                     $scope.result = "You've been logged out!";

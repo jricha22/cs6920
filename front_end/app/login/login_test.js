@@ -97,7 +97,7 @@ describe('loginController', function () {
         it('sets variables ', function () {
             $httpBackend.expectGET('/api/core/profile/').respond(200, '');
             $httpBackend.flush();
-            
+
             $httpBackend.expectDELETE('/api/core/login/').respond(200, '');
 
             scope.logout();

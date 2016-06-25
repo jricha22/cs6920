@@ -8,6 +8,7 @@ angular.module('myApp.login', ['ngRoute'])
     }])
 
     .controller('LoginController', ['$rootScope', '$scope', '$http', '$window', function ($rootScope, $scope, $http, $window) {
+        // Check if the user is already logged in
         $http({
             url: "/api/core/profile/",
             dataType: 'json',
@@ -23,6 +24,9 @@ angular.module('myApp.login', ['ngRoute'])
 
             });
 
+        // Try to validate the credentials the user provided and 
+        // set the users profile if correct. Otherwise tell the
+        // user to try again
         $scope.submit = function () {
             $http({
                 url: "/api/core/login/",
@@ -49,6 +53,7 @@ angular.module('myApp.login', ['ngRoute'])
                 });
         }
 
+        // Log the user out by destroying the session on the server
         $scope.logout = function () {
             $http({
                 url: "/api/core/login/",

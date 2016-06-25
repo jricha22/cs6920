@@ -1,52 +1,54 @@
 'use strict';
 
 describe('myApp.view1 module', function() {
-
-  var $rootScope;
-  var $controller;
-  var scope, ctrl;
   beforeEach(module('myApp.view1'));
-
-  beforeEach(inject(function($injector) {
-
-    $rootScope = $injector.get('$rootScope');
-    $controller = $injector.get('$controller');
-    scope = $rootScope.$new();
-    ctrl = $controller('PaginationCtrl', { $scope: scope});
-
-  }));
-
+  var pageCtrl, $scope;
   describe('view1 controller', function(){
 
     it('should have a defined controller', function($controller) {
+        //var $scope = {}
+        //var $http = {}
       var PaginationCtrl = $controller('PaginationCtrl');
       expect(PaginationCtrl).toBeDefined();
     });
 
   });
 
+  describe('Controller init', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+        $scope = $rootScope.$new();
+        $httpBackend.when("GET", "/api/collect/card/?limit=10&offset=0&manalimit=15").respond({"results": [{}, {}, {}], "count": 3});
+        pageCtrl = $controller('PaginationCtrl', {$scope: $scope });
+        $httpBackend.flush();
+      }));
+
+      it('should have 3 cards', function () {
+          expect($scope.totalServerItems).toEqual(3);
+      });
+  });
+/*
   describe('color checkboxes', function(){
 
       it('should change state', function() {
-          var value1 = angular.element(by.binding('filterOptions.filterColor.Colorless'));
+          var value1 = element(by.binding('filterOptions.filterColor.Colorless'));
           var value2 = element(by.binding('filterOptions.filterColor.Black'));
           var value3 = element(by.binding('filterOptions.filterColor.Blue'));
           var value4 = element(by.binding('filterOptions.filterColor.White'));
           var value5 = element(by.binding('filterOptions.filterColor.Red'));
           var value6 = element(by.binding('filterOptions.filterColor.Green'));
-    
+
           expect(value1.getText()).toContain('false');
           expect(value2.getText()).toContain('false');
           expect(value3.getText()).toContain('false');
           expect(value4.getText()).toContain('false');
           expect(value5.getText()).toContain('false');
           expect(value6.getText()).toContain('false');
-    
+
           element(by.model('filterOptions.filterColor.Colorless')).click();
           element(by.model('filterOptions.filterColor.Blue')).click();
           element(by.model('filterOptions.filterColor.White')).click();
           element(by.model('filterOptions.filterColor.Green')).click();
-    
+
           expect(value1.getText()).toContain('true');
           expect(value2.getText()).toContain('false');
           expect(value3.getText()).toContain('true');
@@ -55,7 +57,7 @@ describe('myApp.view1 module', function() {
           expect(value6.getText()).toContain('true');
       });
     });
-    
+
     describe('mana limit number spinner', function(){
 
         it('should have initial value', function() {
@@ -118,7 +120,7 @@ describe('myApp.view1 module', function() {
 
         });
 
-        it('getPagedDataAsync called when Name column sorted', function() {
+        it('getPagedDataAsync called Name column sorted', function() {
 
         });
     });
@@ -139,6 +141,5 @@ describe('myApp.view1 module', function() {
         it('default load should have nonzero total server items', function() {
 
         });
-
-    });
+*/
 });

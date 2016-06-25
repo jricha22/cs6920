@@ -4,7 +4,7 @@ import json
 from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from collect.serializers import *
 from collect.models import *
 
@@ -34,6 +34,8 @@ class CardsViewSet(viewsets.ModelViewSet):
     ?color=Red,Blue&manalimit=5&limit=10&offset=10 returns 10 cards red or blue cards with cost 5 or less, skipping the first 10 results
     """
     serializer_class = CardSerializer
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('name',)
 
     def get_queryset(self):
         queryset = Card.objects.all()

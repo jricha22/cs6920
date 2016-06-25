@@ -1,18 +1,18 @@
-<div class="browseCardsTable" ng-controller="PaginationCtrl">
+<div class="browseCardsTable">
     <h3>Magic:The Gathering Card Search</h3>
     <br/>
     <form class="cardSearchBar">
         <form class="manaForm">
             <label ng-repeat="(color, enabled) in filterOptions.filterColor">
-                <input type="checkbox" ng-model="filterOptions.filterColor[color]"> {{color}}
+                <input type="checkbox" ng-model="filterOptions.filterColor[color]" ng-click="updateCards()"> {{color}}
             </label>
-            <label for="mana" class="manaLimit">Upper mana limit:</label><input type="number" min="0" max="20" ng-model="filterOptions.filterMana"/>
+            <label for="mana" class="manaLimit">Upper mana limit:</label><input type="number" min="0" max="20" ng-model="filterOptions.filterMana" ng-change="updateCards()"/>
         </form>
     </form>
     <table id="card_browse" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <th> <a ng-click="sortType = 'name'; sortReverse = !sortReverse"> Name
+                <th> <a ng-click="sortType = 'name'; sortReverse = !sortReverse; updateCards();"> Name
                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"> </span>
                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"> </span> </a> </th>
                 <th>  Mana Cost </th>
@@ -24,7 +24,7 @@
              </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="card in myData | orderBy:sortType:sortReverse">
+            <tr ng-repeat="card in myData">
                 <td>{{card.name}}</td>
                 <td>{{card.mana_string}}</td>
                 <td>{{card.cmc}}</td>
@@ -35,5 +35,5 @@
             </tr>
         </tbody>
     </table>
-    <uib-pagination total-items="totalServerItems" ng-model="pagingOptions.currentPage" ng-change="pageChanged()" max-size="maxSize" class="pagination-sm" boundary-links="true" force-ellipses="true"></uib-pagination>
+    <uib-pagination total-items="totalServerItems" ng-model="pagingOptions.currentPage" ng-change="updateCards()" max-size="maxSize" class="pagination-sm" boundary-links="true" force-ellipses="true"></uib-pagination>
 </div>

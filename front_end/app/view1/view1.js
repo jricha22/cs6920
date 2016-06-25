@@ -34,51 +34,30 @@ angular.module('myApp.view1', ['ngRoute'])
         currentPage: 1
     };
     
-    $scope.setPage = function (pageNo) {
-        $scope.pagingOptions.currentPage = pageNo;
-    };
-
-    $scope.pageChanged = function() {
-        console.log('Page changed to: ' + $scope.pagingOptions.currentPage);
-    };
-    
-    $scope.setPagingData = function(data){
-        $scope.myData = data.results;
-        $scope.totalServerItems = data['count'];
-    };
-
-    $scope.getPagedDataAsync = function (pageSize, page) {
-            var results = generateApiString(pageSize, page);
-            $http.get(results).success(function (largeLoad) {
-                $scope.setPagingData(largeLoad);
+    $scope.updateCards = function () {
+            var results = generateApiString();
+            $http.get(results).success(function (data) {
+                $scope.myData = data.results;
+                $scope.totalServerItems = data['count'];
             });
     };
 
-    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+    $scope.updateCards();
 
-    function generateApiString(pageSize, page) {
-        var results = "/api/collect/card.json/?limit=";
+    function generateApiString() {
+        var pageSize = $scope.pagingOptions.pageSize;
+        var page = $scope.pagingOptions.currentPage;
+        var results = "/api/collect/card/?limit=" + pageSize + "&offset=" + (page - 1) * pageSize;
         var reverseOffset = $scope.totalServerItems - page * pageSize;
-
-        if ($scope.sortReverse) {
-            if (reverseOffset > 0)
-                results += pageSize + "&offset=" + reverseOffset;
-            else
-                results += (reverseOffset+pageSize);
-        } else {
-            results += pageSize + "&offset=" + (page - 1) * pageSize;
-        }
-
+        
         results += generateFilterColor();
-/*
-        if ($scope.filterOptions.filterName) {
-            var nameText = $scope.filterOptions.filterName;
-            var ft = nameText.replace(/\s+/g, '');
-            results += "&color=" + ft;
-        }
- */
+
         if ($scope.filterOptions.filterMana != null) {
             results += "&manalimit=" + $scope.filterOptions.filterMana;
+        }
+
+        if ($scope.sortReverse) {
+            results += "&ordering=-name"
         }
         return results;
     };
@@ -100,22 +79,4 @@ angular.module('myApp.view1', ['ngRoute'])
         }
         return optionString;
     };
-    
-    $scope.$watch('pagingOptions', function (newVal, oldVal) {
-        if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-        }
-    }, true);
-
-    $scope.$watch('filterOptions', function (newVal, oldVal) {
-        if (newVal !== oldVal) {
-            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-        }
-    }, true);
-
-    $scope.$watch('sortReverse', function(newVal, oldVal) {
-        if (newVal !== oldVal) {
-            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-        }
-    })
 });

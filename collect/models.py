@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class ManaCost(models.Model):
     COLORLESS = 'Colorless'
@@ -82,3 +83,10 @@ class Card(models.Model):
     def __unicode__(self):
         return self.name
 
+class Collection(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    count = models.IntegerField(default=1)
+
+    def __unicode__(self):
+        return self.user.username + " " + self.card.name + " " + "(" + str(self.count) + ")"

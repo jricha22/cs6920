@@ -5,6 +5,7 @@ from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets, status, filters
+from rest_framework.views import APIView
 from collect.serializers import *
 from collect.models import *
 
@@ -46,3 +47,29 @@ class CardsViewSet(viewsets.ModelViewSet):
         if color is not None:
             queryset = queryset.filter(mana_cost__color__in=color.split(','))
         return queryset
+
+
+class CollectionAddCardView(APIView):
+    """
+    MTG add card to collection
+    """
+    @staticmethod
+    def post(request, card_id, format=None):
+        col, created = Collection.objects.get_or_create(user=request.user, card_id=card_id)
+        if not created:
+            col.count += 1
+            col.save()
+        return Response(status=status.HTTP_200_OK)
+
+    @staticmethod
+    def delete(request, card_id, format=None):
+        try:
+            col = Collection.objects.get(user=request.user, card_id=card_id)
+        except Collection.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if col.count == 1:
+            col.delete()
+        else:
+            col.count -= 1
+            col.save()
+        return Response(status=status.HTTP_200_OK)

@@ -52,3 +52,55 @@ class LoginTest(APITestCase):
         response = self.client.post(reverse('login'), {'username': 'nobody', 'password': 'idonthaveone'})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+
+class CreateAccountTest(APITestCase):
+    def setUp(self):
+        self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
+        self.client = APIClient()
+
+    def test_credentials_good(self):
+        response = self.client.post(reverse('create-account'), {'username': 'tsmith', 'password': 'mypass', 'first_name': 'Tom', 'last_name': 'Smith', 'email': 'tsmith@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual('tsmith', response.data['username'])
+
+    def test_credentials_missing_field_email(self):
+        response = self.client.post(reverse('create-account'), {'username': 'tsmith', 'password': 'mypass', 'first_name': 'Tom', 'last_name': 'Smith'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_missing_field_last_name(self):
+        response = self.client.post(reverse('create-account'), {'username': 'tsmith', 'password': 'mypass', 'first_name': 'Tom', 'email': 'tsmith@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_missing_field_first_name(self):
+        response = self.client.post(reverse('create-account'), {'username': 'tsmith', 'password': 'mypass', 'last_name': 'Smith', 'email': 'tsmith@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_missing_field_password(self):
+        response = self.client.post(reverse('create-account'), {'username': 'tsmith', 'first_name': 'Tom', 'last_name': 'Smith', 'email': 'tsmith@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_missing_field_username(self):
+        response = self.client.post(reverse('create-account'), {'password': 'mypass', 'first_name': 'Tom', 'last_name': 'Smith', 'email': 'tsmith@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_no_password_bad(self):
+        response = self.client.post(reverse('create-account'), {'username': 'tsmith', 'password': '', 'first_name': 'tom', 'last_name': 'smith', 'email': 'tsmith@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_no_first_name_bad(self):
+        response = self.client.post(reverse('create-account'), {'username': 'tsmith', 'password': 'mypass', 'first_name': '', 'last_name': 'smith', 'email': 'tsmith@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_no_last_name_bad(self):
+        response = self.client.post(reverse('create-account'), {'username': 'tsmith', 'password': 'mypass', 'first_name': 'tom', 'last_name': '', 'email': 'tsmith@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_no_username_bad(self):
+        response = self.client.post(reverse('create-account'), {'username': '', 'password': 'mypass', 'first_name': 'tom', 'last_name': 'smith', 'email': 'tsmith@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_already_exists(self):
+        response = self.client.post(reverse('create-account'), {'username': 'jdoe', 'password': 'mypass', 'first_name': 'Jane', 'last_name': 'Doe', 'email': 'jdoe@gmail.com'})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual('Username already exists', response.data)
+

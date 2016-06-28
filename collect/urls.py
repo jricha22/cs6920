@@ -9,4 +9,5 @@ router.register(r'manacost', ManaCostViewSet, base_name="manacost")
 urlpatterns = [
     url(r'^$', collect_root, name='collect-root'),
     url(r'^', include(router.urls)),
+    url(r'^collection-add-card/(?P<card_id>\d+)/$', CollectionAddCardView.as_view(), name="collection-add-card")
 ]

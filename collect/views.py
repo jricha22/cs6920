@@ -46,6 +46,12 @@ class CardsViewSet(viewsets.ModelViewSet):
         color = self.request.query_params.get('color', None)
         if color is not None:
             queryset = queryset.filter(mana_cost__color__in=color.split(','))
+        owned = self.request.query_params.get('owned', None)
+        if owned is not None:
+            if owned == "true":
+                queryset = queryset.filter(collection__user_id=self.request.user.id)
+            else:
+                queryset = queryset.exclude(collection__user_id=self.request.user.id)
         return queryset
 
 

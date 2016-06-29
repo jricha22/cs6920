@@ -64,6 +64,24 @@ class CardTest(APITestCase):
                     card_status = True
             self.assertTrue(card_status)
 
+    def test_card_list_owned_true_filter(self):
+        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('collection-add-card', args=[12]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(reverse('card-list'), {'owned': 'true'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(2, len(response.data['results']))
+
+    def test_card_list_owned_false_filter(self):
+        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('collection-add-card', args=[12]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(reverse('card-list'), {'limit': 1000, 'owned': 'false'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(Card.objects.all().count() - 2, len(response.data['results']))
+
 
 class ManaCostTest(APITestCase):
     def setUp(self):

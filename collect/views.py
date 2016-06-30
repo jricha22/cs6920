@@ -1,6 +1,7 @@
 '''Defines all the view functions that handle HTTP requests/responses.'''
 
 from django.db import IntegrityError
+from django.db.models import F
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
@@ -20,6 +21,7 @@ def collect_root(request, format=None):
     return Response({
         'card': reverse('card-list', request=request, format=format),
         'manacost': reverse('manacost-list', request=request, format=format),
+        'deck': reverse('deck', request=request, format=format)
     })
 
 
@@ -125,4 +127,27 @@ class DeckAddCardView(APIView):
             col.save()
         else:
             return Response("Card with that ID not in deck", status=status.HTTP_400_BAD_REQUEST)
+        return Response("Success", status=status.HTTP_200_OK)
+
+
+class DeckView(APIView):
+    """
+    MTG add/delete card to/from deck
+    """
+    serializer_class = CardSerializer
+
+    @staticmethod
+    def get(request, format=None):
+        query = Card.objects.filter(collection__user=request.user, collection__in_deck__gt=0)
+        result = []
+        for card in query:
+            result.append({"id": card.id, "name": card.name, "type": card.type, "cmc": card.cmc,
+                           "rarity": card.rarity, "power_text": card.power_text, "power": card.power,
+                           "toughness_text": card.toughness_text, "toughness": card.toughness,
+                           "count": card.collection_set.all()[0].in_deck})
+        return Response(result)
+
+    @staticmethod
+    def delete(request, format=None):
+        Collection.objects.filter(user=request.user).update(in_deck=0)
         return Response("Success", status=status.HTTP_200_OK)

@@ -10,7 +10,8 @@ class CardTest(APITestCase):
         self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
         self.client = APIClient()
         self.client.login(username='jdoe', password='pass1234')
-        self.card = Card.objects.get(id=10)
+        self.card = Card.objects.all()[0]
+        self.card2 = Card.objects.all()[1]
         self.card_ten = Card.objects.all()[10]
 
     def test_card_list(self):
@@ -26,7 +27,7 @@ class CardTest(APITestCase):
     def test_card_detail_mana_string(self):
         response = self.client.get(reverse('card-detail', args=[self.card.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual('1W', response.data['mana_string'])
+        self.assertEqual('3B', response.data['mana_string'])
 
     def test_card_pagination_length(self):
         response = self.client.get(reverse('card-list'), {'limit': 10})
@@ -65,7 +66,7 @@ class CardTest(APITestCase):
             self.assertTrue(card_status)
 
     def test_card_list_owned_true_filter(self):
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.post(reverse('collection-add-card', args=[12]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -74,9 +75,9 @@ class CardTest(APITestCase):
         self.assertEquals(2, len(response.data['results']))
 
     def test_card_list_owned_false_filter(self):
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.post(reverse('collection-add-card', args=[12]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card2.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(reverse('card-list'), {'limit': 1000, 'owned': 'false'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -88,7 +89,7 @@ class ManaCostTest(APITestCase):
         self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
         self.client = APIClient()
         self.client.login(username='jdoe', password='pass1234')
-        self.cost = ManaCost.objects.get(id=10)
+        self.cost = ManaCost.objects.all()[0]
         self.cost_ten = ManaCost.objects.all()[10]
 
     def test_cost_list(self):
@@ -118,10 +119,10 @@ class CollectionTest(APITestCase):
         self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
         self.client = APIClient()
         self.client.login(username='jdoe', password='pass1234')
-        self.card = Card.objects.get(id=10)
+        self.card = Card.objects.all()[0]
 
     def test_add_card_to_collection(self):
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(reverse('card-list'), {'limit': 1000})
         card_found = False
@@ -130,12 +131,12 @@ class CollectionTest(APITestCase):
                 self.assertEqual(card['cards_owned'], 1)
                 card_found=True
                 break
-        self.assertEquals(True, card_found, msg="Card 10 not found in card list!")
+        self.assertEquals(True, card_found, msg="Card not found in card list!")
 
     def test_add_card_to_collection_twice(self):
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(reverse('card-list'), {'limit': 1000})
         card_found = False
@@ -144,14 +145,14 @@ class CollectionTest(APITestCase):
                 self.assertEqual(card['cards_owned'], 2)
                 card_found = True
                 break
-        self.assertEquals(True, card_found, msg="Card 10 not found in card list!")
+        self.assertEquals(True, card_found, msg="Card not found in card list!")
 
     def test_add_card_to_collection_twice_remove_one(self):
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.delete(reverse('collection-add-card', args=[10]))
+        response = self.client.delete(reverse('collection-add-card', args=[self.card.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(reverse('card-list'), {'limit': 1000})
         card_found = False
@@ -163,13 +164,13 @@ class CollectionTest(APITestCase):
         self.assertEquals(True, card_found, msg="Card 10 not found in card list!")
 
     def test_add_card_to_collection_twice_remove_two(self):
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.delete(reverse('collection-add-card', args=[10]))
+        response = self.client.delete(reverse('collection-add-card', args=[self.card.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.delete(reverse('collection-add-card', args=[10]))
+        response = self.client.delete(reverse('collection-add-card', args=[self.card.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(reverse('card-list'), {'limit': 1000})
         card_found = False
@@ -181,19 +182,19 @@ class CollectionTest(APITestCase):
         self.assertEquals(True, card_found, msg="Card 10 not found in card list!")
 
     def test_add_card_to_collection_twice_remove_three(self):
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.delete(reverse('collection-add-card', args=[10]))
+        response = self.client.delete(reverse('collection-add-card', args=[self.card.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.delete(reverse('collection-add-card', args=[10]))
+        response = self.client.delete(reverse('collection-add-card', args=[self.card.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.delete(reverse('collection-add-card', args=[10]))
+        response = self.client.delete(reverse('collection-add-card', args=[self.card.id]))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_add_card_to_collection_other_user_does_not_have(self):
-        response = self.client.post(reverse('collection-add-card', args=[10]), {})
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.superuser = User.objects.create_superuser('tsmith', 'o@o.com', 'pass1234')
         self.client.login(username='tsmith', password='pass1234')
@@ -204,4 +205,95 @@ class CollectionTest(APITestCase):
                 self.assertEqual(card['cards_owned'], 0)
                 card_found=True
                 break
-        self.assertEquals(True, card_found, msg="Card 10 not found in card list!")
+        self.assertEquals(True, card_found, msg="Card  not found in card list!")
+
+
+class DeckTest(APITestCase):
+    def setUp(self):
+        self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
+        self.client = APIClient()
+        self.client.login(username='jdoe', password='pass1234')
+        self.card = Card.objects.all()[0]
+        self.land = Card.objects.filter(type__startswith="Basic Land")[0]
+
+    def test_add_card_to_deck(self):
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        col = Collection.objects.get(user=self.superuser, card_id=self.card.id)
+        self.assertEqual(1, col.in_deck)
+
+    def test_add_2_cards_to_deck(self):
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        col = Collection.objects.get(user=self.superuser, card_id=self.card.id)
+        self.assertEqual(2, col.in_deck)
+
+    def test_add_2_cards_to_deck_with_one_in_collection(self):
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        col = Collection.objects.get(user=self.superuser, card_id=self.card.id)
+        self.assertEqual(1, col.in_deck)
+
+    def test_add_5_cards_to_deck_with_5_in_collection_fails(self):
+        for i in range(5):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(4):
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        col = Collection.objects.get(user=self.superuser, card_id=self.card.id)
+        self.assertEqual(4, col.in_deck)
+
+    def test_add_5_land_cards_to_deck_with_5_in_collection_succeeds(self):
+        for i in range(5):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(5):
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        col = Collection.objects.get(user=self.superuser, card_id=self.land.id)
+        self.assertEqual(5, col.in_deck)
+
+    def test_delete_card_from_deck(self):
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        col = Collection.objects.get(user=self.superuser, card_id=self.card.id)
+        self.assertEqual(1, col.in_deck)
+        response = self.client.delete(reverse('deck-add-card', args=[self.card.id]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_card_from_deck_without_card_fails(self):
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.delete(reverse('deck-add-card', args=[self.card.id]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_add_2_cards_to_deck_with_2_remove_one_from_collection(self):
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.delete(reverse('collection-add-card', args=[self.card.id]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        col = Collection.objects.get(user=self.superuser, card_id=self.card.id)
+        self.assertEqual(1, col.in_deck)

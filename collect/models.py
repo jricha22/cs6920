@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 class ManaCost(models.Model):
     COLORLESS = 'Colorless'
@@ -83,10 +84,22 @@ class Card(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class Collection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
-    count = models.IntegerField(default=1)
+    count = models.PositiveSmallIntegerField(default=1)
+    in_deck = models.PositiveSmallIntegerField(default=0)
+
+    def clean(self):
+        if self.in_deck > self.count:
+            raise ValidationError('More cards in deck than user owns')
+        if self.in_deck > 4 and "Basic Land" not in self.card.type:
+            raise ValidationError('Cannot have more than 4 copies of a non basic land card in deck')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(Collection, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.user.username + " " + self.card.name + " " + "(" + str(self.count) + ")"
+        return self.user.username + " " + self.card.name + " " + "(" + str(self.in_deck) + "/" + str(self.count) + ")"

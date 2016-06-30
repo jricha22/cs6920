@@ -1,6 +1,7 @@
 '''Defines all the view functions that handle HTTP requests/responses.'''
 
-import json
+from django.db import IntegrityError
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -8,6 +9,10 @@ from rest_framework import viewsets, status, filters
 from rest_framework.views import APIView
 from collect.serializers import *
 from collect.models import *
+
+
+class EmptySerializer(serializers.Serializer):
+    empty = serializers.HiddenField(default=None,allow_null=True)
 
 
 @api_view(('GET',))
@@ -57,25 +62,67 @@ class CardsViewSet(viewsets.ModelViewSet):
 
 class CollectionAddCardView(APIView):
     """
-    MTG add card to collection
+    MTG add/delete card to/from collection
     """
+    serializer_class = EmptySerializer
+
     @staticmethod
     def post(request, card_id, format=None):
-        col, created = Collection.objects.get_or_create(user=request.user, card_id=card_id)
+        try:
+            col, created = Collection.objects.get_or_create(user=request.user, card_id=card_id)
+        except IntegrityError:
+            return Response("Card with that ID does not exist", status=status.HTTP_400_BAD_REQUEST)
         if not created:
             col.count += 1
             col.save()
-        return Response(status=status.HTTP_200_OK)
+        return Response("Success", status=status.HTTP_200_OK)
 
     @staticmethod
     def delete(request, card_id, format=None):
         try:
             col = Collection.objects.get(user=request.user, card_id=card_id)
         except Collection.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response("Could not find card with that ID", status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError as exc:
+            return Response(exc, status=status.HTTP_400_BAD_REQUEST)
         if col.count == 1:
             col.delete()
         else:
             col.count -= 1
+            if col.in_deck > col.count:
+                col.in_deck = col.count
             col.save()
-        return Response(status=status.HTTP_200_OK)
+        return Response("Success", status=status.HTTP_200_OK)
+
+
+class DeckAddCardView(APIView):
+    """
+    MTG add/delete card to/from deck
+    """
+    serializer_class = EmptySerializer
+
+    @staticmethod
+    def post(request, card_id, format=None):
+        try:
+            col = Collection.objects.get(card_id=card_id)
+        except Collection.DoesNotExist:
+            return Response("Card with that ID not in collection", status=status.HTTP_400_BAD_REQUEST)
+        try:
+            col.in_deck += 1
+            col.save()
+        except ValidationError as exc:
+            return Response(exc.message_dict[NON_FIELD_ERRORS][0], status=status.HTTP_400_BAD_REQUEST)
+        return Response("Success", status=status.HTTP_200_OK)
+
+    @staticmethod
+    def delete(request, card_id, format=None):
+        try:
+            col = Collection.objects.get(user=request.user, card_id=card_id)
+        except Collection.DoesNotExist:
+            return Response("Card with that ID not in collection", status=status.HTTP_400_BAD_REQUEST)
+        if col.in_deck:
+            col.in_deck -= 1
+            col.save()
+        else:
+            return Response("Card with that ID not in deck", status=status.HTTP_400_BAD_REQUEST)
+        return Response("Success", status=status.HTTP_200_OK)

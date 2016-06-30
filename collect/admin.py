@@ -15,7 +15,7 @@ class ManaCostAdmin(admin.ModelAdmin):
 
 
 class CollectionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'card', 'count')
+    list_display = ('id', 'user', 'card', 'count', 'in_deck')
     list_filter = ['user']
     search_fields = ['user']
 

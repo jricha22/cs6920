@@ -1,7 +1,7 @@
 '''Defines all the view functions that handle HTTP requests/responses.'''
 
 from django.db import IntegrityError
-from django.db.models import F
+from django.db.models import F, Sum
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
@@ -114,7 +114,8 @@ class DeckAddCardView(APIView):
             col.save()
         except ValidationError as exc:
             return Response(exc.message_dict[NON_FIELD_ERRORS][0], status=status.HTTP_400_BAD_REQUEST)
-        return Response("Success", status=status.HTTP_200_OK)
+        card_count = Collection.objects.filter(user=request.user).aggregate(card_count=Sum(F('in_deck')))["card_count"]
+        return Response({"valid": card_count >= 40}, status=status.HTTP_200_OK)
 
     @staticmethod
     def delete(request, card_id, format=None):
@@ -127,7 +128,8 @@ class DeckAddCardView(APIView):
             col.save()
         else:
             return Response("Card with that ID not in deck", status=status.HTTP_400_BAD_REQUEST)
-        return Response("Success", status=status.HTTP_200_OK)
+        card_count = Collection.objects.filter(user=request.user).aggregate(card_count=Sum(F('in_deck')))["card_count"]
+        return Response({"valid": card_count >= 40}, status=status.HTTP_200_OK)
 
 
 class DeckView(APIView):
@@ -139,12 +141,20 @@ class DeckView(APIView):
     @staticmethod
     def get(request, format=None):
         query = Card.objects.filter(collection__user=request.user, collection__in_deck__gt=0)
-        result = []
+        card_list = []
+        card_count = Collection.objects.filter(user=request.user).aggregate(card_count=Sum(F('in_deck')))["card_count"]
+        if card_count >= 40:
+            valid = True
+            message = "Deck is valid"
+        else:
+            valid = False
+            message = "Deck must have at least 40 cards"
         for card in query:
-            result.append({"id": card.id, "name": card.name, "type": card.type, "cmc": card.cmc,
+            card_list.append({"id": card.id, "name": card.name, "type": card.type, "cmc": card.cmc,
                            "rarity": card.rarity, "power_text": card.power_text, "power": card.power,
                            "toughness_text": card.toughness_text, "toughness": card.toughness,
                            "count": card.collection_set.all()[0].in_deck})
+        result = {"valid": valid, "message": message, "size": card_count, "cards": card_list}
         return Response(result)
 
     @staticmethod

@@ -310,9 +310,11 @@ class DeckTest(APITestCase):
             response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
             self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(reverse('deck'))
-        self.assertEqual(2, len(response.data))
-        for item in response.data:
+        self.assertEqual(2, len(response.data["cards"]))
+        for item in response.data["cards"]:
             self.assertTrue(item["id"] in [self.land.id, self.card.id])
+        self.assertFalse(response.data["valid"])
+        self.assertEqual(5, response.data["size"])
 
     def test_wipe_deck(self):
         for i in range(2):
@@ -329,4 +331,23 @@ class DeckTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(reverse('deck'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(0, len(response.data))
+        self.assertEqual(0, len(response.data["cards"]))
+
+    def test_deck_valid(self):
+        for i in range(4):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertFalse(response.data["valid"])
+        for i in range(35):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertFalse(response.data["valid"])
+        response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data["valid"])

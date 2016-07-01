@@ -6,6 +6,9 @@
             <label ng-repeat="(color, enabled) in filterOptions.filterColor">
                 <input type="checkbox" ng-model="filterOptions.filterColor[color]" ng-click="updateCards()"> {{color}}
             </label>
+            <label>
+                <input type="checkbox" ng-model="filterOptions.filterCollection" ng-click="updateCards()"> Collected
+            </label>
             <label for="mana" class="manaLimit">Upper mana limit:</label><input type="number" min="0" max="20" ng-model="filterOptions.filterMana" ng-change="updateCards()"/>
         </form>
     </form>
@@ -21,6 +24,7 @@
                 <th>  Rarity </th>
                 <th>  Power </th>
                 <th>  Toughness </th>
+                <th>  Qty. Collected</th>
              </tr>
         </thead>
         <tbody>
@@ -32,6 +36,7 @@
                 <td>{{card.rarity}}</td>
                 <td>{{card.power}}</td>
                 <td>{{card.toughness}}</td>
+                <td>{{card.cards_owned}}</td>
             </tr>
         </tbody>
     </table>

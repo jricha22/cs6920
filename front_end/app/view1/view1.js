@@ -20,7 +20,8 @@ angular.module('myApp.view1', ['ngRoute'])
             Green : false
         },
         filterMana: 15,
-        filterName: ''      // set the default search/filter term
+        filterName: '',      // set the default search/filter term
+        filterCollection: false
     };
 
     $scope.sortType = 'name';   // set the default sort type
@@ -59,6 +60,11 @@ angular.module('myApp.view1', ['ngRoute'])
         if ($scope.sortReverse) {
             results += "&ordering=-name"
         }
+
+        if ($scope.filterOptions.filterCollection) {
+            results += "&owned=true"
+        }
+
         return results;
     };
 

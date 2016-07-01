@@ -297,3 +297,36 @@ class DeckTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         col = Collection.objects.get(user=self.superuser, card_id=self.card.id)
         self.assertEqual(1, col.in_deck)
+
+    def test_add_2_cards_3_lands_to_deck_get_deck(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(reverse('deck'))
+        self.assertEqual(2, len(response.data))
+        for item in response.data:
+            self.assertTrue(item["id"] in [self.land.id, self.card.id])
+
+    def test_wipe_deck(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.delete(reverse('deck'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(reverse('deck'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(0, len(response.data))

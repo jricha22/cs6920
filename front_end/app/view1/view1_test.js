@@ -109,4 +109,58 @@ describe('myApp.view1 module', function() {
           expect($scope.totalServerItems).toEqual(9);
       });
   });
+
+  describe('Controller collection filters', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+        $scope = $rootScope.$new();
+        httpBackend = $httpBackend;
+        httpBackend.when("GET", "/api/collect/card/?limit=10&offset=0&manalimit=15").respond({"results": [{}, {}, {}], "count": 1});
+        pageCtrl = $controller('PaginationCtrl', {$scope: $scope });
+        httpBackend.flush();
+      }));
+
+      it('should have 0 cards with collection filter', function () {
+          httpBackend.when("GET", "/api/collect/card/?limit=10&offset=0&manalimit=15&owned=true").respond({"results": [{}, {}], "count": 0});
+          $scope.filterOptions.filterCollection = true;
+          $scope.updateCards();
+          httpBackend.flush();
+          expect($scope.totalServerItems).toEqual(0);
+      });
+
+      it('should have 2 cards with collection filter', function () {
+          httpBackend.when("GET", "/api/collect/card/?limit=10&offset=0&manalimit=15&owned=true").respond({"results": [{}, {}, {}], "count": 2});
+          $scope.filterOptions.filterCollection = true;
+          $scope.updateCards();
+          httpBackend.flush();
+          expect($scope.totalServerItems).toEqual(2);
+      });
+
+  });
+
+  describe('Controller collection add/remove', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+        $scope = $rootScope.$new();
+        httpBackend = $httpBackend;
+        httpBackend.when("GET", "/api/collect/card/?limit=10&offset=0&manalimit=15").respond({"results": [{}, {}, {}], "count": 1});
+        pageCtrl = $controller('PaginationCtrl', {$scope: $scope });
+        httpBackend.flush();
+      }));
+
+      it('should call increment properly', function () {
+          httpBackend.when("POST", "api/collect/collection-add-card/85/").respond({results: "Success"});
+          httpBackend.when("GET", "/api/collect/card/?limit=10&offset=0&manalimit=15").respond({"results": [{}, {}, {}], "count": 1});
+          $scope.incrementCollection(85);
+          httpBackend.flush();
+          expect($scope.totalServerItems).toEqual(1);
+      });
+
+      it('should call decrement properly', function () {
+          httpBackend.when("DELETE", "api/collect/collection-add-card/85/").respond({results: "Success"});
+          httpBackend.when("GET", "/api/collect/card/?limit=10&offset=0&manalimit=15").respond({"results": [{}, {}, {}], "count": 1});
+          $scope.decrementCollection(85);
+          httpBackend.flush();
+          expect($scope.totalServerItems).toEqual(1);
+      });
+      
+  });
 });

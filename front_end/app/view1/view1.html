@@ -36,7 +36,10 @@
                 <td>{{card.rarity}}</td>
                 <td>{{card.power}}</td>
                 <td>{{card.toughness}}</td>
-                <td>{{card.cards_owned}}</td>
+                <td>{{card.cards_owned}}
+                    <button ng-click="decrementCollection(card.id)"> - </button>
+                    <button ng-click="incrementCollection(card.id)"> + </button>
+                </td>
             </tr>
         </tbody>
     </table>

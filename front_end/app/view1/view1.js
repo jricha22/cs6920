@@ -85,4 +85,24 @@ angular.module('myApp.view1', ['ngRoute'])
         }
         return optionString;
     };
+
+    $scope.decrementCollection = function (id) {
+        $http({
+				method: 'DELETE',
+				url: "api/collect/collection-add-card/" + id + '/',
+				data: id
+        }).success(function () {
+                $scope.updateCards()
+        });
+    };
+
+    $scope.incrementCollection = function (id) {
+        $http({
+				method: 'POST',
+				url: "api/collect/collection-add-card/" + id + '/',
+				data: id
+        }).success(function () {
+                $scope.updateCards()
+        });
+    };
 });

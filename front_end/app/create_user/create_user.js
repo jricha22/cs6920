@@ -17,6 +17,28 @@ angular.module('myApp.createuser', ['ngRoute'])
         // and log the user in.
         // If passwords don't match tell the user to try again
         // If the username is taken tell the user to try again
+        $scope.myButton = true;
+
+        $scope.check_all_fields = function () {
+
+            if ($scope.password1 !== $scope.password2) {
+                $scope.pwd_message = "Passwords do not match!";
+                $scope.myButton = true;
+                return
+            } else {
+                $scope.pwd_message = "";
+                $scope.myButton = false;
+            }
+
+            if ($scope.username === undefined || $scope.password1 === undefined || $scope.password2 === undefined ||
+                $scope.first_name === undefined || $scope.last_name === undefined || $scope.email === undefined) {
+                $scope.myButton = true;
+            } else {
+                $scope.myButton = false;
+            }
+
+        }
+
         $scope.submit = function () {
 
             if ($scope.password1 !== $scope.password2) {

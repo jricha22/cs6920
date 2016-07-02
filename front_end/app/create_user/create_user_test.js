@@ -41,11 +41,14 @@ describe('CreateUserController', function () {
 
     describe('create user controller should show error for mismatched passwords', function () {
         it('sets variables ', function () {
+            scope.username = "a";
+            scope.first_name = "a";
+            scope.last_name = "a";
+            scope.email = "a@a.com"
             scope.password1 = "password1";
             scope.password2 = "password2";
-            scope.submit();
-            expect(scope.result).toEqual("Passwords do not match!");
-
+            scope.check_all_fields();
+            expect(scope.pwd_message).toEqual("Passwords do not match!");
         });
     });
 });
@@ -128,6 +131,51 @@ describe('CreateUserController', function () {
             expect(scope.last_name).toBeNull();
             expect(scope.email).toBeNull();
             expect(scope.result).toBeNull();
+        });
+    });
+});
+
+describe('CreateUserController', function () {
+    beforeEach(module('myApp.createuser'));
+    var controller, scope;
+
+    beforeEach(inject(function ($controller, $rootScope) {
+        scope = $rootScope.$new();
+        console.log('scope1', scope);
+        controller = $controller('CreateUserController', {
+            $scope: scope
+        });
+    }));
+
+    describe('create user controller start with submit button disabled', function () {
+        it('sets variable myButton to true ', function () {
+            expect(scope.myButton).toBeTruthy();
+        });
+    });
+});
+
+describe('CreateUserController', function () {
+    beforeEach(module('myApp.createuser'));
+    var controller, scope;
+
+    beforeEach(inject(function ($controller, $rootScope) {
+        scope = $rootScope.$new();
+        console.log('scope1', scope);
+        controller = $controller('CreateUserController', {
+            $scope: scope
+        });
+    }));
+
+    describe('create user controller should enable button when all fields are complete', function () {
+        it('sets variable myButton to false ', function () {
+            scope.username = "a";
+            scope.password1 = "a";
+            scope.password2 = "a";
+            scope.first_name = "a";
+            scope.last_name = "a";
+            scope.email = "a@a.com"
+            scope.check_all_fields();
+            expect(scope.myButton).toBeFalsy();
         });
     });
 });

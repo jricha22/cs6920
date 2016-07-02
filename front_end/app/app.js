@@ -7,6 +7,7 @@ angular.module('myApp', [
   'myApp.view2',
   'myApp.login',
   'myApp.login_required',
+  'myApp.createuser',
   'myApp.version',
   'ui.bootstrap'
 ]).

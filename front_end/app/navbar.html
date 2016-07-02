@@ -16,7 +16,6 @@
             <div class="navbar-inner">
                 <ul class="nav navbar-nav">
                     <li><a href="#!/view1">Browse Cards</a></li>
-
                 </ul>
             </div>
             <ul class="nav navbar-nav navbar-right" ng-controller="LoginController">
@@ -49,6 +48,7 @@
                         </li>
                     </ul>
                 </li>
+                <li ng-hide="profile"><a href="#!/create_user" id="signup">Sign Up</a></li>
                 <li ng-show="profile"><p class="navbar-text" id="authuser">Welcome {{ first_name }}</p></li>
                 <li class="dropdown" ng-show="profile">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="logout"><b>Logout</b> <span class="caret"></span></a>

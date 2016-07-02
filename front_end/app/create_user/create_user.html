@@ -1,0 +1,39 @@
+<div class="browseCardsTable">
+    <h3>Create a User Account</h3>
+    <br/>
+    <div style="max-width: 500px;">
+        <form class="form" ng-submit="submit()">
+            <div class="form-group">
+                <input type="text" class="form-control" ng-model="username" required placeholder="Username"
+                       id="username">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" ng-model="password1" required placeholder="Password"
+                       id="password1">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" ng-model="password2" required
+                       placeholder="Repeat Password"
+                       id="password2">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" ng-model="first_name" required placeholder="First Name"
+                       id="first_name">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" ng-model="last_name" required placeholder="Last Name"
+                       id="last_name">
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-control" ng-model="email" required placeholder="Email Address"
+                       id="emmail">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block" id="signup">Sign Up</button>
+                <div id="my_error">{{ result }}</div>
+            </div>
+        </form>
+    </div>
+
+</div>
+</div>

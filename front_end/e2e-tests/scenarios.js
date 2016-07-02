@@ -88,4 +88,17 @@ describe('my app', function() {
 
   });
 
+  describe('create_user', function() {
+
+    beforeEach(function() {
+      browser.get('#!/create_user');
+    });
+
+    it('should render create user page when user navigates to /create_user', function() {
+      expect(element.all(by.css('[ng-view] h3')).first().getText()).
+        toMatch(/Create a User Account/);
+    });
+
+  });
+
 });

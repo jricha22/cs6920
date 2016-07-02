@@ -15,7 +15,8 @@ module.exports = function(config) {
         //end of scripts added for ui.bootstrap issue
       'components/version/*.js',
       'view*/**/*.js',
-      'login/**/*.js'
+      'login/**/*.js',
+      'create_user/**/*.js'
     ],
 
     autoWatch: true,

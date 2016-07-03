@@ -105,4 +105,20 @@ angular.module('myApp.view1', ['ngRoute'])
                 $scope.updateCards()
         });
     };
+
+    $scope.incrementDeck = function (id) {
+        $http({
+				method: 'POST',
+				url: "api/collect/deck-add-card/" + id + '/',
+				data: id
+        }).success(function () {
+                $scope.updateCards()
+        }).error(function (error, status) {
+                if (status === 400) {
+                    $scope.result = "You tried to add more than four non-basic lands or you ran out of cards in your collection to add to the deck!";
+                } else {
+                    $scope.result = "I'm sorry, an occurred while processing your request. Please try again!";
+                }
+        });
+    };
 });

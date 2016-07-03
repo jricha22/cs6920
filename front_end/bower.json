@@ -15,5 +15,8 @@
     "jquery": "^3.0.0",
     "datatables.net": "^1.10.12",
     "datatables.net-bs": "^1.10.12"
+  },
+  "resolutions": {
+    "angular": "~1.5.0"
   }
 }

@@ -24,7 +24,8 @@
                 <th>  Rarity </th>
                 <th>  Power </th>
                 <th>  Toughness </th>
-                <th>  Qty. Collected</th>
+                <th>  Qty. Collected </th>
+                <th>  Qty. in Deck </th>
              </tr>
         </thead>
         <tbody>
@@ -36,9 +37,15 @@
                 <td>{{card.rarity}}</td>
                 <td>{{card.power}}</td>
                 <td>{{card.toughness}}</td>
-                <td>{{card.cards_owned}}
+                <td>
                     <button ng-click="decrementCollection(card.id)"> - </button>
+                    {{card.cards_owned}}
                     <button ng-click="incrementCollection(card.id)"> + </button>
+                </td>
+                <td>
+                    <button ng-click="decrementDeck(card.id)"> - </button>
+                    {{card.in_deck}}
+                    <button ng-click="incrementDeck(card.id)"> + </button>
                 </td>
             </tr>
         </tbody>

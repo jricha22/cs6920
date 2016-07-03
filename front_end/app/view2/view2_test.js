@@ -3,14 +3,14 @@
 describe('myApp.view2 module', function() {
 
   beforeEach(module('myApp.view2'));
-
+  var view2Ctrl;
   describe('view2 controller', function(){
 
-    it('should ....', inject(function($controller) {
+    it('should have a defined controller', function($controller) {
       //spec body
-      var view2Ctrl = $controller('View2Ctrl');
-      expect(view2Ctrl).toBeDefined();
-    }));
+      view2Ctrl = $controller('View2Ctrl');
+      expect(View2Ctrl).toBeDefined();
+    });
 
   });
 });

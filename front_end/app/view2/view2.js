@@ -27,6 +27,23 @@ angular.module('myApp.view2', ['ngRoute'])
     };
 
     $scope.updateCards();
+    
+    $scope.decrementDeck = function (id) {
+        $http({
+                method: 'DELETE',
+                url: "api/collect/deck-add-card/" + id + '/',
+                data: id
+        }).success(function () {
+                $scope.updateCards();
+                $scope.result = "";
+        }).error(function (error, status) {
+                if (status === 400) {
+                    $scope.result = "You tried to add more than four non-basic lands or you ran out of cards in your collection to add to the deck!";
+                } else {
+                    $scope.result = "I'm sorry, an occurred while processing your request. Please try again!";
+                }
+        });
+    };
 
     $scope.incrementDeck = function (id) {
         $http({
@@ -34,7 +51,8 @@ angular.module('myApp.view2', ['ngRoute'])
 				url: "api/collect/deck-add-card/" + id + '/',
 				data: id
         }).success(function () {
-                $scope.updateCards()
+                $scope.updateCards();
+                $scope.result = "";
         }).error(function (error, status) {
                 if (status === 400) {
                     $scope.result = "You tried to add more than four non-basic lands or you ran out of cards in your collection to add to the deck!";

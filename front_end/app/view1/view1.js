@@ -27,6 +27,7 @@ angular.module('myApp.view1', ['ngRoute'])
     $scope.sortType = 'name';   // set the default sort type
     $scope.sortReverse = false;    // set the default sort order
     $scope.myData = [];
+    $scope.myDeck = [];
     $scope.totalServerItems = 0;
     $scope.maxSize = 5;
 
@@ -36,11 +37,23 @@ angular.module('myApp.view1', ['ngRoute'])
     };
     
     $scope.updateCards = function () {
-            var results = generateApiString();
-            $http.get(results).success(function (data) {
-                $scope.myData = data.results;
-                $scope.totalServerItems = data['count'];
+        var results = generateApiString();
+        $http.get(results).success(function (data) {
+            $scope.myData = data.results;
+            $scope.totalServerItems = data['count'];
+
+            $http.get("/api/collect/deck/").success(function (data) {
+                $scope.myDeck = data['cards'];
+
+                angular.forEach($scope.myData, function(value1, i) {
+                    angular.forEach($scope.myDeck, function(value2, j) {
+                        if (value1.id === value2.id){
+                            $scope.myData[i]['in_deck'] = value2['count'];
+                        }
+                    });
+                });
             });
+        });
     };
 
     $scope.updateCards();
@@ -49,7 +62,6 @@ angular.module('myApp.view1', ['ngRoute'])
         var pageSize = $scope.pagingOptions.pageSize;
         var page = $scope.pagingOptions.currentPage;
         var results = "/api/collect/card/?limit=" + pageSize + "&offset=" + (page - 1) * pageSize;
-        var reverseOffset = $scope.totalServerItems - page * pageSize;
         
         results += generateFilterColor();
 
@@ -103,6 +115,22 @@ angular.module('myApp.view1', ['ngRoute'])
 				data: id
         }).success(function () {
                 $scope.updateCards()
+        });
+    };
+
+    $scope.decrementDeck = function (id) {
+        $http({
+				method: 'DELETE',
+				url: "api/collect/deck-add-card/" + id + '/',
+				data: id
+        }).success(function () {
+                $scope.updateCards()
+        }).error(function (error, status) {
+                if (status === 400) {
+                    $scope.result = "You tried to add more than four non-basic lands or you ran out of cards in your collection to add to the deck!";
+                } else {
+                    $scope.result = "I'm sorry, an occurred while processing your request. Please try again!";
+                }
         });
     };
 

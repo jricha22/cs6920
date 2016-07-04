@@ -101,3 +101,28 @@ class CreateAccountView(APIView):
                 login(request, user)
                 return Response(UserSerializer(user, context={'request': request}).data)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+class ChangePasswordView(APIView):
+    """
+    MTG reset user password.  POST inputs: 'old_password', 'password'
+    Revalidate the user and try to change their password
+    """
+    @staticmethod
+    def post(request, *args, **kwargs):
+        required = ['old_password', 'password']
+        if not all(key in request.data for key in required):
+            return Response("Reset of password must include new password",
+                            status=status.HTTP_400_BAD_REQUEST)
+        user = authenticate(username=request.user.username, password=request.data['old_password'])
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                user.set_password(request.data['password'])
+                user.save()
+                user = authenticate(username=request.user.username, password=request.data['password'])
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        return Response(UserSerializer(user, context={'request': request}).data)
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)

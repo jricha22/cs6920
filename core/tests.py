@@ -104,3 +104,29 @@ class CreateAccountTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual('Username already exists', response.data)
 
+class ChangePasswordTest(APITestCase):
+    def setUp(self):
+        self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
+        self.client = APIClient()
+        self.client.post(reverse('login'), {'username': 'jdoe', 'password': 'pass1234'})
+
+    def test_credentials_missing_field_old_passwod(self):
+        response = self.client.post(reverse('change-password'),
+                                    {'password': 'mypass'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_missing_field_passwod(self):
+        response = self.client.post(reverse('change-password'),
+                                    {'old_password': 'pass1234'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_credentials_good(self):
+        response = self.client.post(reverse('change-password'),
+                                    {'old_password': 'pass1234', 'password': 'mypass'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual('jdoe', response.data['username'])
+
+    def test_credentials_bad_old_password(self):
+        response = self.client.post(reverse('change-password'),
+                                    {'old_password': 'pass123', 'password': 'mypass'})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

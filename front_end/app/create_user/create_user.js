@@ -57,14 +57,14 @@ angular.module('myApp.createuser', ['ngRoute'])
                 }
             }).success(function (response) {
                 $rootScope.profile = response;
-                $scope.$parent.first_name = $scope.first_name;
-                $scope.username = null;
-                $scope.password1 = null;
-                $scope.password2 = null;
-                $scope.first_name = null;
-                $scope.last_name = null;
-                $scope.email = null;
-                $scope.result = null;
+                $rootScope.name = $rootScope.profile.first_name;
+                delete $scope.username;
+                delete $scope.password1;
+                delete $scope.password2;
+                delete $scope.first_name;
+                delete $scope.last_name;
+                delete $scope.email;
+                delete $scope.result;
                 
                 $location.path('/view1');
             })

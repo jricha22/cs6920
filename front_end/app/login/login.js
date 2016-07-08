@@ -15,9 +15,9 @@ angular.module('myApp.login', ['ngRoute'])
             method: 'GET',
         }).success(function (response) {
             $rootScope.profile = response;
-            $scope.first_name = $rootScope.profile.first_name;
-            if ($scope.first_name == "") {
-                $scope.first_name = $rootScope.profile.username;
+            $rootScope.name = $rootScope.profile.first_name;
+            if ($rootScope.name == "") {
+                $rootScope.name = $rootScope.profile.username;
             }
         })
             .error(function (error) {
@@ -38,13 +38,13 @@ angular.module('myApp.login', ['ngRoute'])
                 }
             }).success(function (response) {
                 $rootScope.profile = response;
-                $scope.first_name = $rootScope.profile.first_name;
-                if ($scope.first_name == "") {
-                    $scope.first_name = $rootScope.profile.username;
+                $rootScope.name = $rootScope.profile.first_name;
+                if ($rootScope.name == "") {
+                    $rootScope.name = $rootScope.profile.username;
                 }
-                $scope.username = null;
-                $scope.password = null;
-                $scope.result = null;
+                delete $scope.username;
+                delete $scope.password;
+                delete $scope.result;
                 $route.reload();
             })
                 .error(function (error) {
@@ -64,9 +64,10 @@ angular.module('myApp.login', ['ngRoute'])
                     "Content-Type": "application/json"
                 }
             }).success(function (response) {
-                $rootScope.profile = null;
-                $scope.username = null;
-                $scope.password = null;
+                delete $rootScope.profile;
+                delete $rootScope.name;
+                delete $scope.username;
+                delete $scope.password;
                 $route.reload();
             })
                 .error(function (error) {

@@ -64,4 +64,26 @@ describe('myApp.view2 module', function() {
           expect($scope.result).toEqual("I'm sorry, an occurred while processing your request. Please try again!");
       });
   });
+
+  describe('Clear deck button', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+          $scope = $rootScope.$new();
+          httpBackend = $httpBackend;
+          httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          pageCtrl = $controller('View2Ctrl', {$scope: $scope});
+          httpBackend.flush();
+      }));
+
+      it('should clear deck properly', function () {
+          spyOn(window, 'confirm').and.callFake(function () {
+            return true;
+          });
+          
+          httpBackend.when("DELETE", "api/collect/deck/").respond({"cards": [{}]});
+          httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          $scope.clearDeck();
+          httpBackend.flush();
+          expect($scope.result).toEqual("Success!");
+      });
+  });
 });

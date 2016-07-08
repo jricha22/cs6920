@@ -53,7 +53,7 @@ h3 {
 }
 
 .table-fixed tbody {
-    height: 350px;
+    max-height: 350px;
     overflow-y: auto;
 }
 

@@ -62,4 +62,22 @@ angular.module('myApp.view2', ['ngRoute'])
                 }
         });
     };
+
+    $scope.clearDeck = function() {
+        if (confirm("Are you sure you want to clear your deck?")) {
+            $http({
+                method: 'DELETE',
+                url: "api/collect/deck/",
+            }).success(function () {
+                $scope.updateCards();
+                $scope.result = "Success!";
+            }).error(function (error, status) {
+                if (status === 400) {
+                    $scope.result = "You tried to add more than four non-basic lands or you ran out of cards in your collection to add to the deck!";
+                } else {
+                    $scope.result = "I'm sorry, an occurred while processing your request. Please try again!";
+                }
+            });
+        }
+    }
 });

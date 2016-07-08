@@ -1,25 +1,25 @@
-<div class="browseDeckTable">
+<div class="deck_browse">
     <h3>Personal Deck</h3>
     <br/>
-    <table id="card_browse" class="table table-striped table-bordered table-hover" cellspacing="0" width="20%">
+    <table id="browseDeckTable" class="table table-fixed">
         <thead>
             <tr>
-                <th> Name </th>
-                <th> Qty. in Deck </th>
+                <th class="col-md-1">#</th>
+                <th class="col-md-6">Name</th>
+                <th class="col-md-5"> Qty. in Deck </th>
              </tr>
         </thead>
         <tbody>
-            <div class="scrollbar">
                 <tr ng-repeat="card in myData">
-                    <td>{{card.name}}</td>
-                    <td>
+                    <td class="col-md-1">{{$index +1}}</td>
+                    <td class="col-md-6">{{card.name}}</td>
+                    <td class="col-md-5">
                         <button ng-click="decrementDeck(card.id)"> - </button>
                         {{card.count}}
                         <button ng-click="incrementDeck(card.id)"> + </button>
                     </td>
                 </tr>
-            </div>
         </tbody>
     </table>
-    <div id="my_error">{{ result }}</div>
+    <div id="my_error" ng-hide="result == 'Success!'">{{ result }}</div>
 </div>

@@ -1,4 +1,4 @@
-<div class="browseCardsTable">
+<div class="card_browse">
     <h3>Magic:The Gathering Card Search</h3>
     <br/>
     <form class="cardSearchBar">
@@ -12,7 +12,7 @@
             <label for="mana" class="manaLimit">Upper mana limit:</label><input type="number" min="0" max="20" ng-model="filterOptions.filterMana" ng-change="updateCards()"/>
         </form>
     </form>
-    <table id="card_browse" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+    <table id="browseCardsTable" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
         <thead>
             <tr>
                 <th> <a ng-click="sortType = 'name'; sortReverse = !sortReverse; updateCards();"> Name

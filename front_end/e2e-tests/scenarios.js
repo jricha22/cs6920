@@ -26,18 +26,18 @@ describe('my app', function() {
   });
 
 
-  //describe('view2', function() {
+  describe('view2', function() {
 
-  //  beforeEach(function() {
-  //    browser.get('#!/view2');
-  //  });
-    
-  //  it('should render view2 when user navigates to /view2', function() {
-  //    expect(element.all(by.css('[ng-view] h3')).first().getText()).
-  //      toMatch(/Please Login to access this resource./);
-  //  });
+    beforeEach(function() {
+      browser.get('#!/view2');
+    });
 
-  //});
+    it('should render view2 when user navigates to /view2 while logged out', function() {
+      expect(element.all(by.css('[ng-view] h3')).first().getText()).
+        toMatch(/Please Login to access this resource./);
+    });
+
+  });
 
   describe('login', function() {
 

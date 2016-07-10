@@ -106,7 +106,7 @@ class DeckAddCardView(APIView):
     @staticmethod
     def post(request, card_id, format=None):
         try:
-            col = Collection.objects.get(card_id=card_id)
+            col = Collection.objects.get(user=request.user, card_id=card_id)
         except Collection.DoesNotExist:
             return Response("Card with that ID not in collection", status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -153,7 +153,7 @@ class DeckView(APIView):
             card_list.append({"id": card.id, "name": card.name, "type": card.type, "cmc": card.cmc,
                            "rarity": card.rarity, "power_text": card.power_text, "power": card.power,
                            "toughness_text": card.toughness_text, "toughness": card.toughness,
-                           "count": card.collection_set.all()[0].in_deck})
+                           "count": card.collection_set.filter(user=request.user)[0].in_deck})
         result = {"valid": valid, "message": message, "size": card_count, "cards": card_list}
         return Response(result)
 

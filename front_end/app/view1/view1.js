@@ -127,7 +127,7 @@ angular.module('myApp.view1', ['ngRoute'])
                 $scope.updateCards()
         }).error(function (error, status) {
                 if (status === 400) {
-                    $scope.result = "You tried to add more than four non-basic lands or you ran out of cards in your collection to add to the deck!";
+                    $scope.result = error;
                 } else {
                     $scope.result = "I'm sorry, an occurred while processing your request. Please try again!";
                 }
@@ -143,7 +143,7 @@ angular.module('myApp.view1', ['ngRoute'])
                 $scope.updateCards()
         }).error(function (error, status) {
                 if (status === 400) {
-                    $scope.result = "You tried to add more than four non-basic lands or you ran out of cards in your collection to add to the deck!";
+                    $scope.result = error;
                 } else {
                     $scope.result = "I'm sorry, an occurred while processing your request. Please try again!";
                 }

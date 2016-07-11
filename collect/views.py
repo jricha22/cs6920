@@ -161,3 +161,24 @@ class DeckView(APIView):
     def delete(request, format=None):
         Collection.objects.filter(user=request.user).update(in_deck=0)
         return Response("Success", status=status.HTTP_200_OK)
+
+
+class PublishDeckView(APIView):
+    """
+    MTG publish or unpublish a users deck
+    """
+    serializer_class = EmptySerializer
+
+    @staticmethod
+    def post(request, name, format=None):
+        public = PublicDeck(user=request.user, name=name)
+        try:
+            public.save()
+        except IntegrityError:
+            return Response("User already has a published deck! Delete old one first!", status=status.HTTP_400_BAD_REQUEST)
+        return Response("Deck published", status=status.HTTP_200_OK)
+
+    @staticmethod
+    def delete(request, name, format=None):
+        PublicDeck.objects.filter(user=request.user).delete()
+        return Response("Published deck removed", status=status.HTTP_200_OK)

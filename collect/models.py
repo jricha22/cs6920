@@ -103,3 +103,11 @@ class Collection(models.Model):
 
     def __unicode__(self):
         return self.user.username + " " + self.card.name + " " + "(" + str(self.in_deck) + "/" + str(self.count) + ")"
+
+
+class PublicDeck(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=256, unique=True)
+
+    def __unicode__(self):
+        return self.name + " (" + self.user.username + ")"

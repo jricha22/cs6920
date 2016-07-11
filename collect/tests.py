@@ -351,3 +351,61 @@ class DeckTest(APITestCase):
         response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data["valid"])
+
+class PublishDeckTest(APITestCase):
+    def setUp(self):
+        self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
+        self.client = APIClient()
+        self.client.login(username='jdoe', password='pass1234')
+        self.card = Card.objects.all()[0]
+        self.land = Card.objects.filter(type__startswith="Basic Land")[0]
+
+    def publishDeck(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('publish-deck', args=['my_deck']), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def publishDeckTwiceFails(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('publish-deck', args=['my_deck']), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('publish-deck', args=['my_deck2']), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def deletePublishedDeck(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('publish-deck', args=['my_deck']), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.delete(reverse('publish-deck', args=['my_deck2']), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def deletePublishedDeckWithNonePublishedSucceeds(self):
+        response = self.client.delete(reverse('publish-deck', args=['my_deck2']), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

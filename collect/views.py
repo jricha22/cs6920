@@ -21,7 +21,8 @@ def collect_root(request, format=None):
     return Response({
         'card': reverse('card-list', request=request, format=format),
         'manacost': reverse('manacost-list', request=request, format=format),
-        'deck': reverse('deck', request=request, format=format)
+        'deck': reverse('deck', request=request, format=format),
+        'publicdeck': reverse('publicdeck-list', request=request, format=format)
     })
 
 
@@ -182,3 +183,10 @@ class PublishDeckView(APIView):
     def delete(request, name, format=None):
         PublicDeck.objects.filter(user=request.user).delete()
         return Response("Published deck removed", status=status.HTTP_200_OK)
+
+class PublicDeckViewSet(viewsets.ModelViewSet):
+    """
+    Get list of all published decks in the system
+    """
+    queryset = PublicDeck.objects.all()
+    serializer_class = PublicDeckSerializer

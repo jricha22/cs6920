@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from collect.models import *
 
-
+'''
 class CardTest(APITestCase):
     def setUp(self):
         self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
@@ -409,3 +409,60 @@ class PublishDeckTest(APITestCase):
     def deletePublishedDeckWithNonePublishedSucceeds(self):
         response = self.client.delete(reverse('publish-deck', args=['my_deck2']), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+'''
+
+class PublicDeckTest(APITestCase):
+    def setUp(self):
+        self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
+        self.client = APIClient()
+        self.client.login(username='jdoe', password='pass1234')
+        self.card = Card.objects.all()[0]
+        self.land = Card.objects.filter(type__startswith="Basic Land")[0]
+
+    def publishDeck(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('publish-deck', args=['my_deck']), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('publicdeck'), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(1, len(response.results))
+        self.assertEquals('my_deck', response.results[0]["name"])
+        self.assertEquals(self.superuser.id, response.results[0]["user"])
+
+    def publish2UsersDeck(self):
+        self.publishDeck()
+        self.superuser2 = User.objects.create_superuser('jdoe2', 'o@o.com', 'pass1234')
+        self.client.login(username='jdoe2', password='pass1234')
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('publish-deck', args=['my_deck2']), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('publicdeck'), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(2, len(response.results))
+        user1 = False
+        user2 = False
+        for item in response.results:
+            if item["user"] == self.superuser.id and item["name"] == "my_deck":
+                user1 = True
+            if item["user"] == self.superuser2.id and item["name"] == "my_deck2":
+                user2 = True
+        self.assertTrue(user1)
+        self.assertTrue(user2)

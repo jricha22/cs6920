@@ -4,6 +4,7 @@ from collect.views import *
 
 router = DefaultRouter()
 router.register(r'card', CardsViewSet, base_name="card")
+router.register(r'publicdeck', PublicDeckViewSet, base_name="publicdeck")
 router.register(r'manacost', ManaCostViewSet, base_name="manacost")
 
 urlpatterns = [

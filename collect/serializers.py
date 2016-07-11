@@ -9,6 +9,13 @@ class ManaCostSerializer(serializers.ModelSerializer):
         model = ManaCost
 
 
+class PublicDeckSerializer(serializers.ModelSerializer):
+    average_rating = serializers.ReadOnlyField()
+
+    class Meta:
+        model = PublicDeck
+
+
 class CardSerializer(serializers.ModelSerializer):
     mana_cost = ManaCostSerializer(read_only=True, many=True)
     mana_string = serializers.ReadOnlyField()

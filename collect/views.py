@@ -152,9 +152,11 @@ class DeckView(APIView):
             message = "Deck must have at least 40 cards"
         colors = {"Colorless": 0, "Black": 0, "Blue": 0, "Green": 0, "Red": 0, "White": 0}
         types = {"Creature": 0, "Artifact": 0, "Sorcery": 0, "Enchantment": 0, "Instant": 0, "Planeswalker": 0, "Land": 0}
+        curve = [0] * 10
         for card in query:
             mana_string = card.mana_string
             num_cards = card.collection_set.filter(user=request.user)[0].in_deck
+            curve[card.cmc] += num_cards
             colorless = True
             if 'U' in mana_string:
                 colors["Blue"] += num_cards
@@ -197,7 +199,7 @@ class DeckView(APIView):
             for key in types.keys():
                 types[key] = int(types[key] / float(card_count) * 100 + 0.5)
         result = {"valid": valid, "message": message, "size": card_count, "color_spread": colors,
-                  "type_spread": types, "cards": card_list}
+                  "type_spread": types, "mana_curve": curve, "cards": card_list}
         return Response(result)
 
     @staticmethod

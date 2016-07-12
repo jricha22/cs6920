@@ -382,6 +382,21 @@ class DeckTest(APITestCase):
         self.assertEquals(60, response.data["type_spread"]["Land"])
         self.assertEquals(40, response.data["type_spread"]["Creature"])
 
+    def test_deck_mana_curve(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(reverse('deck'))
+        self.assertEquals(3, response.data["mana_curve"][0])
+        self.assertEquals(2, response.data["mana_curve"][4])
+
 
 
 class PublishDeckTest(APITestCase):

@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from collect.models import *
 
-'''
+
 class CardTest(APITestCase):
     def setUp(self):
         self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
@@ -352,6 +352,23 @@ class DeckTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data["valid"])
 
+    def test_deck_color_spread(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(reverse('deck'))
+        self.assertEquals(60, response.data["color_spread"]["Colorless"])
+        self.assertEquals(40, response.data["color_spread"]["Black"])
+
+
+
 class PublishDeckTest(APITestCase):
     def setUp(self):
         self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
@@ -409,7 +426,7 @@ class PublishDeckTest(APITestCase):
     def deletePublishedDeckWithNonePublishedSucceeds(self):
         response = self.client.delete(reverse('publish-deck', args=['my_deck2']), {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-'''
+
 
 class PublicDeckTest(APITestCase):
     def setUp(self):

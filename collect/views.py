@@ -150,12 +150,36 @@ class DeckView(APIView):
         else:
             valid = False
             message = "Deck must have at least 40 cards"
+        colors = {"Colorless": 0, "Black": 0, "Blue": 0, "Green": 0, "Red": 0, "White": 0}
         for card in query:
+            mana_string = card.mana_string
+            num_cards = card.collection_set.filter(user=request.user)[0].in_deck
+            colorless = True
+            if 'U' in mana_string:
+                colors["Blue"] += num_cards
+                colorless = False
+            if 'B' in mana_string:
+                colors["Black"] += num_cards
+                colorless = False
+            if 'G' in mana_string:
+                colors["Green"] += num_cards
+                colorless = False
+            if 'R' in mana_string:
+                colors["Red"] += num_cards
+                colorless = False
+            if 'W' in mana_string:
+                colors["White"] += num_cards
+                colorless = False
+            if colorless:
+                colors["Colorless"] += num_cards
             card_list.append({"id": card.id, "name": card.name, "type": card.type, "cmc": card.cmc,
                            "rarity": card.rarity, "power_text": card.power_text, "power": card.power,
                            "toughness_text": card.toughness_text, "toughness": card.toughness,
                            "count": card.collection_set.filter(user=request.user)[0].in_deck})
-        result = {"valid": valid, "message": message, "size": card_count, "cards": card_list}
+        if card_count:
+            for key in colors.keys():
+                colors[key] = int(colors[key]/float(card_count) * 100 + 0.5)
+        result = {"valid": valid, "message": message, "size": card_count, "color_spread": colors, "cards": card_list}
         return Response(result)
 
     @staticmethod

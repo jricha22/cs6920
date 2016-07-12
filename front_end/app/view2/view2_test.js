@@ -91,14 +91,29 @@ describe('myApp.view2 module', function() {
       beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
           $scope = $rootScope.$new();
           httpBackend = $httpBackend;
-          httpBackend.when("GET", "/api/collect/deck/").respond({"color_spread":'"Black:33","Blue:0", "Colorless:0", "Green:0", "Red:33", "White:33"'});
+          httpBackend.when("GET", "/api/collect/deck/").respond({"color_spread": "Black:33, Blue:0, Colorless:0, Green:0, Red:33, White:33"});
           pageCtrl = $controller('View2Ctrl', {$scope: $scope});
           httpBackend.flush();
       }));
 
       it('should set myColors to the list of color percentages', function () {
           httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
-          expect($scope.myColors).toEqual('"Black:33","Blue:0", "Colorless:0", "Green:0", "Red:33", "White:33"');
+          expect($scope.myColors).toEqual("Black:33, Blue:0, Colorless:0, Green:0, Red:33, White:33");
+      });
+  });
+
+    describe('Controller types', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+          $scope = $rootScope.$new();
+          httpBackend = $httpBackend;
+          httpBackend.when("GET", "/api/collect/deck/").respond({"type_spread": "Land: 0, Instant: 0, Enchantment: 0, Sorcery: 25, Artifact: 0, Creature: 75, Planeswalker: 0"});
+          pageCtrl = $controller('View2Ctrl', {$scope: $scope});
+          httpBackend.flush();
+      }));
+
+      it('should set myTypes to the list of type percentages', function () {
+          httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          expect($scope.myTypes).toEqual("Land: 0, Instant: 0, Enchantment: 0, Sorcery: 25, Artifact: 0, Creature: 75, Planeswalker: 0");
       });
   });
 });

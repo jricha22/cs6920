@@ -16,6 +16,8 @@ angular.module('myApp.view2', ['ngRoute'])
             $scope.myData = data['cards'];
             $scope.result = "Success!";
             $scope.myColors = data['color_spread'];
+            $scope.myTypes = data['type_spread'];
+            console.log($scope.myTypes);
         });
     };
 

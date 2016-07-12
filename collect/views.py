@@ -151,6 +151,7 @@ class DeckView(APIView):
             valid = False
             message = "Deck must have at least 40 cards"
         colors = {"Colorless": 0, "Black": 0, "Blue": 0, "Green": 0, "Red": 0, "White": 0}
+        types = {"Creature": 0, "Artifact": 0, "Sorcery": 0, "Enchantment": 0, "Instant": 0, "Planeswalker": 0, "Land": 0}
         for card in query:
             mana_string = card.mana_string
             num_cards = card.collection_set.filter(user=request.user)[0].in_deck
@@ -172,6 +173,20 @@ class DeckView(APIView):
                 colorless = False
             if colorless:
                 colors["Colorless"] += num_cards
+            if "Creature" in card.type:
+                types["Creature"] += num_cards
+            if "Artifact" in card.type:
+                types["Artifact"] += num_cards
+            if "Sorcery" in card.type:
+                types["Sorcery"] += num_cards
+            if "Enchantment" in card.type:
+                types["Enchantment"] += num_cards
+            if "Instant" in card.type:
+                types["Instant"] += num_cards
+            if "Planeswalker" in card.type:
+                types["Planeswalker"] += num_cards
+            if "Land" in card.type:
+                types["Land"] += num_cards
             card_list.append({"id": card.id, "name": card.name, "type": card.type, "cmc": card.cmc,
                            "rarity": card.rarity, "power_text": card.power_text, "power": card.power,
                            "toughness_text": card.toughness_text, "toughness": card.toughness,
@@ -179,7 +194,10 @@ class DeckView(APIView):
         if card_count:
             for key in colors.keys():
                 colors[key] = int(colors[key]/float(card_count) * 100 + 0.5)
-        result = {"valid": valid, "message": message, "size": card_count, "color_spread": colors, "cards": card_list}
+            for key in types.keys():
+                types[key] = int(types[key] / float(card_count) * 100 + 0.5)
+        result = {"valid": valid, "message": message, "size": card_count, "color_spread": colors,
+                  "type_spread": types, "cards": card_list}
         return Response(result)
 
     @staticmethod

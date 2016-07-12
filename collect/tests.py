@@ -367,6 +367,21 @@ class DeckTest(APITestCase):
         self.assertEquals(60, response.data["color_spread"]["Colorless"])
         self.assertEquals(40, response.data["color_spread"]["Black"])
 
+    def test_deck_type_spread(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(reverse('deck'))
+        self.assertEquals(60, response.data["type_spread"]["Land"])
+        self.assertEquals(40, response.data["type_spread"]["Creature"])
+
 
 
 class PublishDeckTest(APITestCase):

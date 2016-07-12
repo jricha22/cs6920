@@ -133,79 +133,96 @@ class DeckAddCardView(APIView):
         return Response({"valid": card_count >= 40}, status=status.HTTP_200_OK)
 
 
+def _get_deck(id):
+    query = Card.objects.filter(collection__user=id, collection__in_deck__gt=0)
+    card_list = []
+    card_count = Collection.objects.filter(user=id).aggregate(card_count=Sum(F('in_deck')))["card_count"]
+    if card_count >= 40:
+        valid = True
+        message = "Deck is valid"
+    else:
+        valid = False
+        message = "Deck must have at least 40 cards"
+    colors = {"Colorless": 0, "Black": 0, "Blue": 0, "Green": 0, "Red": 0, "White": 0}
+    types = {"Creature": 0, "Artifact": 0, "Sorcery": 0, "Enchantment": 0, "Instant": 0, "Planeswalker": 0, "Land": 0}
+    curve = [0] * 10
+    for card in query:
+        mana_string = card.mana_string
+        num_cards = card.collection_set.filter(user=id)[0].in_deck
+        curve[card.cmc] += num_cards
+        colorless = True
+        if 'U' in mana_string:
+            colors["Blue"] += num_cards
+            colorless = False
+        if 'B' in mana_string:
+            colors["Black"] += num_cards
+            colorless = False
+        if 'G' in mana_string:
+            colors["Green"] += num_cards
+            colorless = False
+        if 'R' in mana_string:
+            colors["Red"] += num_cards
+            colorless = False
+        if 'W' in mana_string:
+            colors["White"] += num_cards
+            colorless = False
+        if colorless:
+            colors["Colorless"] += num_cards
+        if "Creature" in card.type:
+            types["Creature"] += num_cards
+        if "Artifact" in card.type:
+            types["Artifact"] += num_cards
+        if "Sorcery" in card.type:
+            types["Sorcery"] += num_cards
+        if "Enchantment" in card.type:
+            types["Enchantment"] += num_cards
+        if "Instant" in card.type:
+            types["Instant"] += num_cards
+        if "Planeswalker" in card.type:
+            types["Planeswalker"] += num_cards
+        if "Land" in card.type:
+            types["Land"] += num_cards
+        card_list.append({"id": card.id, "name": card.name, "type": card.type, "cmc": card.cmc,
+                          "rarity": card.rarity, "power_text": card.power_text, "power": card.power,
+                          "toughness_text": card.toughness_text, "toughness": card.toughness,
+                          "count": card.collection_set.filter(user=id)[0].in_deck})
+    if card_count:
+        for key in colors.keys():
+            colors[key] = int(colors[key] / float(card_count) * 100 + 0.5)
+        for key in types.keys():
+            types[key] = int(types[key] / float(card_count) * 100 + 0.5)
+    result = {"valid": valid, "message": message, "size": card_count, "color_spread": colors,
+              "type_spread": types, "mana_curve": curve, "cards": card_list}
+    return result
+
+
 class DeckView(APIView):
     """
-    MTG add/delete card to/from deck
+    MTG retrieve users deck
     """
     serializer_class = CardSerializer
 
     @staticmethod
     def get(request, format=None):
-        query = Card.objects.filter(collection__user=request.user, collection__in_deck__gt=0)
-        card_list = []
-        card_count = Collection.objects.filter(user=request.user).aggregate(card_count=Sum(F('in_deck')))["card_count"]
-        if card_count >= 40:
-            valid = True
-            message = "Deck is valid"
-        else:
-            valid = False
-            message = "Deck must have at least 40 cards"
-        colors = {"Colorless": 0, "Black": 0, "Blue": 0, "Green": 0, "Red": 0, "White": 0}
-        types = {"Creature": 0, "Artifact": 0, "Sorcery": 0, "Enchantment": 0, "Instant": 0, "Planeswalker": 0, "Land": 0}
-        curve = [0] * 10
-        for card in query:
-            mana_string = card.mana_string
-            num_cards = card.collection_set.filter(user=request.user)[0].in_deck
-            curve[card.cmc] += num_cards
-            colorless = True
-            if 'U' in mana_string:
-                colors["Blue"] += num_cards
-                colorless = False
-            if 'B' in mana_string:
-                colors["Black"] += num_cards
-                colorless = False
-            if 'G' in mana_string:
-                colors["Green"] += num_cards
-                colorless = False
-            if 'R' in mana_string:
-                colors["Red"] += num_cards
-                colorless = False
-            if 'W' in mana_string:
-                colors["White"] += num_cards
-                colorless = False
-            if colorless:
-                colors["Colorless"] += num_cards
-            if "Creature" in card.type:
-                types["Creature"] += num_cards
-            if "Artifact" in card.type:
-                types["Artifact"] += num_cards
-            if "Sorcery" in card.type:
-                types["Sorcery"] += num_cards
-            if "Enchantment" in card.type:
-                types["Enchantment"] += num_cards
-            if "Instant" in card.type:
-                types["Instant"] += num_cards
-            if "Planeswalker" in card.type:
-                types["Planeswalker"] += num_cards
-            if "Land" in card.type:
-                types["Land"] += num_cards
-            card_list.append({"id": card.id, "name": card.name, "type": card.type, "cmc": card.cmc,
-                           "rarity": card.rarity, "power_text": card.power_text, "power": card.power,
-                           "toughness_text": card.toughness_text, "toughness": card.toughness,
-                           "count": card.collection_set.filter(user=request.user)[0].in_deck})
-        if card_count:
-            for key in colors.keys():
-                colors[key] = int(colors[key]/float(card_count) * 100 + 0.5)
-            for key in types.keys():
-                types[key] = int(types[key] / float(card_count) * 100 + 0.5)
-        result = {"valid": valid, "message": message, "size": card_count, "color_spread": colors,
-                  "type_spread": types, "mana_curve": curve, "cards": card_list}
-        return Response(result)
+        return Response(_get_deck(request.user.id))
 
     @staticmethod
     def delete(request, format=None):
         Collection.objects.filter(user=request.user).update(in_deck=0)
         return Response("Success", status=status.HTTP_200_OK)
+
+
+class PublicDeckView(APIView):
+    """
+    MTG retrieve a public deck
+    """
+    serializer_class = CardSerializer
+
+    @staticmethod
+    def get(request, deck_id, format=None):
+        if not PublicDeck.objects.filter(id=deck_id).exists():
+            return Response("No published deck available for that user ID", status=status.HTTP_400_BAD_REQUEST)
+        return Response(_get_deck(PublicDeck.objects.get(id=deck_id).user))
 
 
 class PublishDeckView(APIView):
@@ -227,6 +244,7 @@ class PublishDeckView(APIView):
     def delete(request, name, format=None):
         PublicDeck.objects.filter(user=request.user).delete()
         return Response("Published deck removed", status=status.HTTP_200_OK)
+
 
 class PublicDeckViewSet(viewsets.ModelViewSet):
     """

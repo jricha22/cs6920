@@ -398,7 +398,6 @@ class DeckTest(APITestCase):
         self.assertEquals(2, response.data["mana_curve"][4])
 
 
-
 class PublishDeckTest(APITestCase):
     def setUp(self):
         self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
@@ -513,3 +512,15 @@ class PublicDeckTest(APITestCase):
                 user2 = True
         self.assertTrue(user1)
         self.assertTrue(user2)
+
+    def getOtherUsersPublicDeck(self):
+        self.publishDeck()
+        self.superuser2 = User.objects.create_superuser('jdoe2', 'o@o.com', 'pass1234')
+        self.client.login(username='jdoe2', password='pass1234')
+        response = self.client.post(reverse('publicdeck'), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(1, len(response.results))
+        deck_id = response.results[0]["id"]
+        response = self.client.get(reverse('get-public-deck', args=[deck_id]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(5, response.data["size"])

@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^deck-add-card/(?P<card_id>\d+)/$', DeckAddCardView.as_view(), name="deck-add-card"),
     url(r'^deck/$', DeckView.as_view(), name="deck"),
     url(r'^publish-deck/(?P<name>.+)/$', PublishDeckView.as_view(), name='publish-deck'),
+    url(r'^get-public-deck/(?P<deck_id>\d+)/$', PublicDeckView.as_view(), name="get-public-deck"),
 ]

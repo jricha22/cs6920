@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from collect.models import *
 
-'''
+
 class CardTest(APITestCase):
     def setUp(self):
         self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
@@ -524,7 +524,7 @@ class PublicDeckTest(APITestCase):
         response = self.client.get(reverse('get-public-deck', args=[deck_id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(5, response.data["size"])
-'''
+
 
 class VoteTest(APITestCase):
     def setUp(self):

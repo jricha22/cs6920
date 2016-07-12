@@ -21,6 +21,43 @@
                 </tr>
         </tbody>
     </table>
+
     <div id="my_error" ng-hide="result == 'Success!'">{{ result }}</div>
     <button id="clear_deck" ng-click="clearDeck()">Clear Deck</button>
+
+    <h4>Personal Deck Composition by Color</h4>
+    <table id="colorSpreadTable" class="table table-striped table-bordered table-hover" style="max-width: 200px;">
+        <thead>
+            <tr>
+                <th class="col-md-1">Color</th>
+                <th class="col-md-6">% of Deck</th>
+             </tr>
+        </thead>
+        <tbody>
+                <tr color="black">
+                    <td class="col-md-1">Black</td>
+                    <td class="col-md-6">{{myColors.Black}}</td>
+                </tr>
+                <tr span style="color: blue;">
+                    <td class="col-md-1">Blue</td>
+                    <td class="col-md-6">{{myColors.Blue}}</td>
+                </tr>
+                <tr span style="color: green;">
+                    <td class="col-md-1">Green</td>
+                    <td class="col-md-6">{{myColors.Green}}</td>
+                </tr>
+                <tr span style="color: red;">
+                    <td class="col-md-1">Red</td>
+                    <td class="col-md-6">{{myColors.Red}}</td>
+                </tr>
+                <tr span style="color: white;">
+                    <td class="col-md-1">White</td>
+                    <td class="col-md-6">{{myColors.White}}</td>
+                </tr>
+                <tr>
+                    <td class="col-md-1">Colorless</td>
+                    <td class="col-md-6">{{myColors.Colorless}}</td>
+                </tr>
+        </tbody>
+    </table>
 </div>

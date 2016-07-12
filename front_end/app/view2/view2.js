@@ -15,6 +15,7 @@ angular.module('myApp.view2', ['ngRoute'])
         $http.get("/api/collect/deck/").success(function (data) {
             $scope.myData = data['cards'];
             $scope.result = "Success!";
+            $scope.myColors = data['color_spread'];
         });
     };
 

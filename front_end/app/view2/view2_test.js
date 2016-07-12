@@ -37,7 +37,7 @@ describe('myApp.view2 module', function() {
           httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
           $scope.incrementDeck(85);
           httpBackend.flush();
-          expect($scope.result).toEqual("You tried to add more than four non-basic lands or you ran out of cards in your collection to add to the deck!");
+          expect($scope.result).toEqual("");
       });
 
       it('should fail increment without status 400', function () {
@@ -84,6 +84,21 @@ describe('myApp.view2 module', function() {
           $scope.clearDeck();
           httpBackend.flush();
           expect($scope.result).toEqual("Success!");
+      });
+  });
+
+  describe('Controller colors', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+          $scope = $rootScope.$new();
+          httpBackend = $httpBackend;
+          httpBackend.when("GET", "/api/collect/deck/").respond({"color_spread":'"Black:33","Blue:0", "Colorless:0", "Green:0", "Red:33", "White:33"'});
+          pageCtrl = $controller('View2Ctrl', {$scope: $scope});
+          httpBackend.flush();
+      }));
+
+      it('should set myColors to the list of color percentages', function () {
+          httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          expect($scope.myColors).toEqual('"Black:33","Blue:0", "Colorless:0", "Green:0", "Red:33", "White:33"');
       });
   });
 });

@@ -252,3 +252,35 @@ class PublicDeckViewSet(viewsets.ModelViewSet):
     """
     queryset = PublicDeck.objects.all()
     serializer_class = PublicDeckSerializer
+
+
+class DeckVoteView(APIView):
+    """
+    MTG vote on another users deck 1 to 5 stars
+    """
+    serializer_class = EmptySerializer
+
+    @staticmethod
+    def post(request, deck_id, vote, format=None):
+        vote = int(vote)
+        deck_id = int(deck_id)
+        if not vote in range(1, 6):
+            return Response("Invalid vote", status=status.HTTP_400_BAD_REQUEST)
+        if not PublicDeck.objects.filter(id=deck_id).exists():
+            return Response("Invalid deck id", status=status.HTTP_400_BAD_REQUEST)
+        try:
+            deck_vote, _ = DeckVote.objects.get_or_create(user=request.user, deck_id=deck_id)
+        except DeckVote.DoesNotExist:
+            return Response("Invalid public deck id!", status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as exc:
+            return Response(exc.message_dict[NON_FIELD_ERRORS][0], status=status.HTTP_400_BAD_REQUEST)
+        deck_vote.vote = vote
+        deck_vote.save()
+        return Response("Vote recorded", status=status.HTTP_200_OK)
+
+    @staticmethod
+    def delete(request, deck_id, vote, format=None):
+        if DeckVote.objects.filter(user=request.user, deck=deck_id).delete():
+            return Response("Vote deleted", status=status.HTTP_200_OK)
+        else:
+            return Response("Vote not found", status=status.HTTP_400_BAD_REQUEST)

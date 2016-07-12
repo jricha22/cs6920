@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^deck/$', DeckView.as_view(), name="deck"),
     url(r'^publish-deck/(?P<name>.+)/$', PublishDeckView.as_view(), name='publish-deck'),
     url(r'^get-public-deck/(?P<deck_id>\d+)/$', PublicDeckView.as_view(), name="get-public-deck"),
+    url(r'^vote/(?P<deck_id>\d+)/(?P<vote>\d)/$', DeckVoteView.as_view(), name="vote"),
 ]

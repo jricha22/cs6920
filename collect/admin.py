@@ -1,5 +1,5 @@
 from django.contrib import admin
-from collect.models import Card, ManaCost, Collection, PublicDeck
+from collect.models import Card, ManaCost, Collection, PublicDeck, DeckVote
 
 
 class CardAdmin(admin.ModelAdmin):
@@ -23,8 +23,15 @@ class CollectionAdmin(admin.ModelAdmin):
 class PublicDeckAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'name')
 
+
+class DeckVoteAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'deck', 'vote')
+    list_filter = ['user', 'deck', 'vote']
+    search_fields = ['user', 'deck']
+
 admin.site.register(Card, CardAdmin)
 admin.site.register(ManaCost, ManaCostAdmin)
 admin.site.register(Collection, CollectionAdmin)
 admin.site.register(PublicDeck, PublicDeckAdmin)
+admin.site.register(DeckVote, DeckVoteAdmin)
 

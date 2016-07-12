@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from collect.models import *
 
-
+'''
 class CardTest(APITestCase):
     def setUp(self):
         self.superuser = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
@@ -524,3 +524,36 @@ class PublicDeckTest(APITestCase):
         response = self.client.get(reverse('get-public-deck', args=[deck_id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(5, response.data["size"])
+'''
+
+class VoteTest(APITestCase):
+    def setUp(self):
+        self.my_user = User.objects.create_superuser('jdoe', 'o@o.com', 'pass1234')
+        self.client = APIClient()
+        self.client.login(username='jdoe', password='pass1234')
+        self.other_user = User.objects.create_superuser('tsmith', 'o@o.com', 'pass1234')
+        self.my_deck = PublicDeck.objects.create(user=self.my_user, name='my_deck')
+        self.other_deck = PublicDeck.objects.create(user=self.other_user, name='other_deck')
+
+    def voteDeck(self):
+        response = self.client.post(reverse('vote', args=[self.other_deck.id, 4]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(DeckVote.objects.filter(user=self.my_user.id, deck=self.other_deck.id, vote=4).exists())
+
+    def updateVote(self):
+        DeckVote.objects.create(user=self.my_user.id, deck=self.other_deck.id, vote=4)
+        response = self.client.post(reverse('vote', args=[self.other_deck.id, 3]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(DeckVote.objects.filter(user=self.my_user.id, deck=self.other_deck.id, vote=3).exists())
+
+    def voteRange(self):
+        response = self.client.post(reverse('vote', args=[self.other_deck.id, 0]), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response = self.client.post(reverse('vote', args=[self.other_deck.id, -1]), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response = self.client.post(reverse('vote', args=[self.other_deck.id, 6]), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def voteMyDeckFails(self):
+        response = self.client.post(reverse('vote', args=[self.my_deck.id, 4]), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

@@ -116,3 +116,23 @@ class PublicDeck(models.Model):
 
     def __unicode__(self):
         return self.name + " (" + self.user.username + ")"
+
+
+class DeckVote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    deck = models.ForeignKey(PublicDeck, on_delete=models.CASCADE)
+    vote = models.PositiveSmallIntegerField(choices=[(i, i) for i in range(1, 6)], default=1)
+
+    def clean(self):
+        if self.user == self.deck.user:
+            raise ValidationError('Cannot vote on own deck')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(DeckVote, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.user.username + " : " + self.deck.name + " (" + self.vote + ")"
+
+    class Meta:
+        unique_together = ("user", "deck")

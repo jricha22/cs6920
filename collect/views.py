@@ -1,7 +1,8 @@
 '''Defines all the view functions that handle HTTP requests/responses.'''
 
 from django.db import IntegrityError
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Avg
+from django.db.models.functions import Coalesce, Value
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
@@ -250,8 +251,10 @@ class PublicDeckViewSet(viewsets.ModelViewSet):
     """
     Get list of all published decks in the system
     """
-    queryset = PublicDeck.objects.all()
+    queryset = PublicDeck.objects.all().annotate(rating=Avg('deckvote__vote')).annotate(average_rating=Coalesce('rating', Value(0.0)))
     serializer_class = PublicDeckSerializer
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('name', 'average_rating')
 
 
 class DeckVoteView(APIView):

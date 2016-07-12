@@ -109,11 +109,6 @@ class PublicDeck(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=256, unique=True)
 
-    @property
-    def average_rating(self):
-        # TODO: Implement when votes are available
-        return 0
-
     def __unicode__(self):
         return self.name + " (" + self.user.username + ")"
 

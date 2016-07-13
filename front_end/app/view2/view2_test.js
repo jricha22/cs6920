@@ -116,4 +116,19 @@ describe('myApp.view2 module', function() {
           expect($scope.myTypes).toEqual("Land: 0, Instant: 0, Enchantment: 0, Sorcery: 25, Artifact: 0, Creature: 75, Planeswalker: 0");
       });
   });
+
+    describe('Controller manacurve', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+          $scope = $rootScope.$new();
+          httpBackend = $httpBackend;
+          httpBackend.when("GET", "/api/collect/deck/").respond({"mana_curve": "1, 2, 5, 1, 4, 1, 3, 1, 5, 2"});
+          pageCtrl = $controller('View2Ctrl', {$scope: $scope});
+          httpBackend.flush();
+      }));
+
+      it('should set myCurve for the manacurve data', function () {
+          httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          expect($scope.myCurve).toBeDefined();
+      });
+  });
 });

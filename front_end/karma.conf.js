@@ -11,7 +11,9 @@ module.exports = function(config) {
       'components/version/*.js',
       'view*/**/*.js',
       'login/**/*.js',
-      'create_user/**/*.js'
+      'create_user/**/*.js',
+      'http://cdn.zingchart.com/zingchart.min.js',
+      'http://cdn.zingchart.com/angular/zingchart-angularjs.js'
     ],
 
     autoWatch: true,

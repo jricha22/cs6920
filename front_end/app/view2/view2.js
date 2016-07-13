@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.view2', ['ngRoute'])
+angular.module('myApp.view2', ['ngRoute', 'zingchart-angularjs'])
 
 .config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/view2', {
@@ -10,15 +10,28 @@ angular.module('myApp.view2', ['ngRoute'])
 }])
 
 .controller('View2Ctrl', function($scope, $http) {
-    
+
+    $scope.myCurve = {};
+
     $scope.updateCards = function () {
         $http.get("/api/collect/deck/").success(function (data) {
             $scope.myData = data['cards'];
             $scope.result = "Success!";
             $scope.myColors = data['color_spread'];
             $scope.myTypes = data['type_spread'];
-            console.log($scope.myTypes);
+
+            $scope.myCurve = {
+                type : 'bar',
+                scaleY : { label : { text : 'Number of Cards' } },
+                scaleX : { values : '0:10:1', label : { text : 'Mana Cost' } },
+                title: {text: 'Personal Deck Mana Curve'},
+                series : [
+                  { values : data['mana_curve'] }
+                ]
+            };
+
         });
+
     };
 
     $scope.updateCards();

@@ -127,7 +127,7 @@ class DeckVote(models.Model):
         return super(DeckVote, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.user.username + " : " + self.deck.name + " (" + self.vote + ")"
+        return self.user.username + " : " + self.deck.name + " (" + str(self.vote) + ")"
 
     class Meta:
         unique_together = ("user", "deck")

@@ -223,7 +223,16 @@ class PublicDeckView(APIView):
     def get(request, deck_id, format=None):
         if not PublicDeck.objects.filter(id=deck_id).exists():
             return Response("No published deck available for that user ID", status=status.HTTP_400_BAD_REQUEST)
-        return Response(_get_deck(PublicDeck.objects.get(id=deck_id).user))
+        result = _get_deck(PublicDeck.objects.get(id=deck_id).user)
+        vote_qs = DeckVote.objects.filter(user=request.user, deck_id=deck_id)
+        if vote_qs.exists():
+            result["my_vote"] = vote_qs[0].vote
+        else:
+            result["my_vote"] = 0
+        avg = PublicDeck.objects.filter(id=deck_id).aggregate(Avg('deckvote__vote'))
+        result["average_rating"] = avg["deckvote__vote__avg"] if avg["deckvote__vote__avg"] else 0.0
+        result["name"] = PublicDeck.objects.filter(id=deck_id)[0].name
+        return Response(result)
 
 
 class PublishDeckView(APIView):

@@ -12,9 +12,12 @@ angular.module('myApp.view3', ['ngRoute'])
 .controller('View3Ctrl', function($scope, $http) {
     
     $scope.current_name = "";
-
+    $scope.sortType = 'name';
+    $scope.sortReverse = false;
+    
     $scope.updatePublicDecks = function () {
-        $http.get("api/collect/publicdeck/").success(function (result) {
+        var results = generateApiString();
+        $http.get(results).success(function (result) {
             $scope.myDecks = result['results'];
             $scope.result = "Success!";
         }).error(function (error, status) {
@@ -44,5 +47,18 @@ angular.module('myApp.view3', ['ngRoute'])
                 $scope.result = "I'm sorry, an error occurred while processing your request. Please try again!";
             }
         });
+    };
+    
+    function generateApiString() {
+        var results = "/api/collect/publicdeck/";
+        
+        if ($scope.sortReverse) {
+            results += "?ordering=-" + $scope.sortType;
+        }
+        else {
+            results += "?ordering=" + $scope.sortType;
+        }
+
+        return results;
     };
 });

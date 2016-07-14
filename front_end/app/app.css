@@ -78,11 +78,24 @@ label {
 }
 
 #browseDeckTable {
-  width: auto;
+    width: auto;
+}
+
+#browseDeckTable2 {
+    width: auto;
 }
 
 #publicDeckTable {
- width: auto;
+    width: 60%;
+}
+
+#publicDeckDivLeft {
+    width: 60%;
+    float: left;
+}
+
+#publicDeckDivRight {
+    margin-left: 60%;
 }
 
 th {

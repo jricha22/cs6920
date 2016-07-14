@@ -34,7 +34,7 @@ describe('my app', function() {
 
     it('should render view2 when user navigates to /view2 while logged out', function() {
       expect(element.all(by.css('[ng-view] h3')).first().getText()).
-        toMatch(/Please Login to access this resource./);
+        toMatch('Personal Deck');
     });
 
   });

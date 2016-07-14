@@ -87,4 +87,25 @@ angular.module('myApp.view2', ['ngRoute', 'zingchart-angularjs'])
             });
         }
     }
+    
+    $scope.publishDeck = function () {
+        $http({
+				url: "/api/collect/publish-deck/" + $scope.deckname + '/',
+                dataType: 'json',
+				method: 'POST',
+				data: '{"name": "' + $scope.deckname + '"}',
+                headers: {
+                    "Content-Type": "application/json"
+                }
+        }).success(function () {
+                $scope.publishresult = "Deck Successfully Published.";
+                $scope.updateCards();
+        }).error(function (error, status) {
+                if (status === 400) {
+                    $scope.publishresult = error;
+                } else {
+                    $scope.publishresult = "I'm sorry, an occurred while processing your request. Please try again!";
+                }
+        });
+    }
 });

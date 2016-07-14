@@ -108,4 +108,16 @@
         </table>
 
     <zingchart id="myChart" zc-json="myCurve" zc-height=500 zc-width=600></zingchart>
+
+    <h4>Share this deck publically</h4>
+    <form class="form" ng-submit="publishDeck()">
+            <div class="form-group">
+                <input type="text" class="form-control" ng-model="deckname" required placeholder="Deck Name"
+                       id="deckname">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block" id="Publish" ng-disabled="myButton">Publish</button>
+                <div id="my_error">{{ publishresult }}</div>
+            </div>
+        </form>
 </div>

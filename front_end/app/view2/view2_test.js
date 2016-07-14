@@ -131,4 +131,31 @@ describe('myApp.view2 module', function() {
           expect($scope.myCurve).toBeDefined();
       });
   });
+    
+    describe('Controller sharedeck', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+          $scope = $rootScope.$new();
+          httpBackend = $httpBackend;
+          httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          pageCtrl = $controller('View2Ctrl', {$scope: $scope});
+          httpBackend.flush();
+      }));
+
+      it('should successfully share deck', function () {
+          httpBackend.when("POST", '/api/collect/publish-deck/test/', '{"name": "test"}').respond(200, '');
+          $scope.deckname = "test";
+          $scope.publishDeck();
+          httpBackend.flush();
+          expect($scope.publishresult).toEqual("Deck Successfully Published.");
+      });
+
+        it('should report error when user already has shared deck', function () {
+          httpBackend.when("POST", '/api/collect/publish-deck/bad/', '{"name": "bad"}').respond(400, 'User already has a published deck! Delete old one first!');
+          $scope.deckname = "bad";
+          $scope.publishDeck();
+          httpBackend.flush();
+          expect($scope.publishresult).toEqual("User already has a published deck! Delete old one first!");
+      });
+  });
+
 });

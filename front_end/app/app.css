@@ -81,12 +81,20 @@ label {
   width: auto;
 }
 
+#publicDeckTable {
+ width: auto;
+}
+
 th {
     background-color: #f0f0f0;
 }
 
 th a {
     color: #000000;
+}
+
+#publicDeckTable tr td {
+    cursor: pointer;
 }
 
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
@@ -148,22 +156,7 @@ body {
 #login-dp .form-group {
     margin-bottom: 10px;
 }
-.btn-fb{
-    color: #fff;
-    background-color:#3b5998;
-}
-.btn-fb:hover{
-    color: #fff;
-    background-color:#496ebc
-}
-.btn-tw{
-    color: #fff;
-    background-color:#55acee;
-}
-.btn-tw:hover{
-    color: #fff;
-    background-color:#59b5fa;
-}
+
 @media(max-width:768px){
     #login-dp{
         background-color: inherit;

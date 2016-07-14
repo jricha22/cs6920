@@ -48,7 +48,7 @@ angular.module('myApp.view2', ['ngRoute', 'zingchart-angularjs'])
                 if (status === 400) {
                     $scope.result = error;
                 } else {
-                    $scope.result = "I'm sorry, an occurred while processing your request. Please try again!";
+                    $scope.result = "I'm sorry, an error occurred while processing your request. Please try again!";
                 }
         });
     };
@@ -65,7 +65,7 @@ angular.module('myApp.view2', ['ngRoute', 'zingchart-angularjs'])
                 if (status === 400) {
                     $scope.result = error;
                 } else {
-                    $scope.result = "I'm sorry, an occurred while processing your request. Please try again!";
+                    $scope.result = "I'm sorry, an error occurred while processing your request. Please try again!";
                 }
         });
     };
@@ -82,7 +82,7 @@ angular.module('myApp.view2', ['ngRoute', 'zingchart-angularjs'])
                 if (status === 400) {
                     $scope.result = "You tried to add more than four non-basic lands or you ran out of cards in your collection to add to the deck!";
                 } else {
-                    $scope.result = "I'm sorry, an occurred while processing your request. Please try again!";
+                    $scope.result = "I'm sorry, an error occurred while processing your request. Please try again!";
                 }
             });
         }
@@ -104,7 +104,7 @@ angular.module('myApp.view2', ['ngRoute', 'zingchart-angularjs'])
                 if (status === 400) {
                     $scope.publishresult = error;
                 } else {
-                    $scope.publishresult = "I'm sorry, an occurred while processing your request. Please try again!";
+                    $scope.publishresult = "I'm sorry, an error occurred while processing your request. Please try again!";
                 }
         });
     }

@@ -45,7 +45,7 @@ describe('myApp.view2 module', function() {
           httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
           $scope.incrementDeck(85);
           httpBackend.flush();
-          expect($scope.result).toEqual("I'm sorry, an occurred while processing your request. Please try again!");
+          expect($scope.result).toEqual("I'm sorry, an error occurred while processing your request. Please try again!");
       });
 
       it('should call decrement properly', function () {
@@ -61,7 +61,7 @@ describe('myApp.view2 module', function() {
           httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
           $scope.decrementDeck(85);
           httpBackend.flush();
-          expect($scope.result).toEqual("I'm sorry, an occurred while processing your request. Please try again!");
+          expect($scope.result).toEqual("I'm sorry, an error occurred while processing your request. Please try again!");
       });
   });
 

@@ -12,8 +12,9 @@ angular.module('myApp.view3', ['ngRoute'])
 .controller('View3Ctrl', function($scope, $http) {
     
     $scope.current_name = "";
-    $scope.sortType = 'name';
+    $scope.sortType = "name";
     $scope.sortReverse = false;
+    $scope.result = "";
     
     $scope.updatePublicDecks = function () {
         var results = generateApiString();

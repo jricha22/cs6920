@@ -30,6 +30,8 @@ angular.module('myApp.view2', ['ngRoute', 'zingchart-angularjs'])
                 ]
             };
 
+            $scope.checkForDeck();
+
         });
 
     };
@@ -106,6 +108,35 @@ angular.module('myApp.view2', ['ngRoute', 'zingchart-angularjs'])
                 } else {
                     $scope.publishresult = "I'm sorry, an error occurred while processing your request. Please try again!";
                 }
+        });
+    }
+    
+    $scope.stopSharingDeck = function () {
+        $http({
+				url: "/api/collect/publish-deck/deckname/",
+                dataType: 'json',
+				method: 'DELETE',
+        }).success(function () {
+                $scope.publishresult = "Deck Successfully Deleted.";
+                $scope.updateCards();
+        }).error(function (error, status) {
+                $scope.publishresult = "I'm sorry, an occurred while processing your request. Please try again!";
+        });
+    }
+
+    $scope.checkForDeck = function () {
+        $http({
+				url: "/api/collect/publish-deck/somerequest/",
+                dataType: 'json',
+				method: 'GET',
+                data: '{"name": somerequest"}',
+                headers: {
+                    "Content-Type": "application/json"
+                }
+        }).success(function () {
+                $scope.deckshared = true;
+        }).error(function (error, status) {
+                $scope.deckshared = false;
         });
     }
 });

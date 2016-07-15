@@ -525,6 +525,25 @@ class PublicDeckTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(5, response.data["size"])
 
+    def testUserHasPublishedDeck(self):
+        for i in range(2):
+            response = self.client.post(reverse('collection-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.card.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for i in range(3):
+            response = self.client.post(reverse('collection-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = self.client.post(reverse('deck-add-card', args=[self.land.id]), {})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse('publish-deck', args=['my_deck']), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(reverse('publish-deck', args=['my_deck']), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def testUserHasNotPublishedDeck(self):
+        response = self.client.get(reverse('publish-deck', args=['my_deck']), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 class VoteTest(APITestCase):
     def setUp(self):

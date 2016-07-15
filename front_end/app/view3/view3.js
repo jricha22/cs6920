@@ -12,9 +12,14 @@ angular.module('myApp.view3', ['ngRoute'])
 .controller('View3Ctrl', function($scope, $http) {
     
     $scope.current_name = "";
+    $scope.current_id = 0;
     $scope.sortType = "name";
     $scope.sortReverse = false;
     $scope.result = "";
+
+    $scope.rating = 0;
+    $scope.max = 5;
+    $scope.isReadonly = false;
     
     $scope.updatePublicDecks = function () {
         var results = generateApiString();
@@ -39,8 +44,10 @@ angular.module('myApp.view3', ['ngRoute'])
             data: id
         }).success(function (data) {
             $scope.myData = data['cards'];
-            $scope.result = "Success!";
             $scope.current_name = data['name'];
+            $scope.current_id = id;
+            $scope.rating = data['my_vote'];
+            $scope.result = "Success!";
         }).error(function (error, status) {
             if (status === 400) {
                 $scope.result = error;
@@ -49,7 +56,24 @@ angular.module('myApp.view3', ['ngRoute'])
             }
         });
     };
-    
+
+    $scope.voteDeck = function (vote) {
+        $http({
+            method: 'POST',
+            url: "api/collect/vote/" + $scope.current_id + "/" + vote + "/",
+            data: vote
+        }).success(function (data) {
+            $scope.result = "Success!";
+            $scope.updatePublicDecks();
+        }).error(function (error, status) {
+            if (status === 400) {
+                $scope.result = error;
+            } else {
+                $scope.result = "I'm sorry, an error occurred while processing your request. Please try again!";
+            }
+        });
+    };
+
     function generateApiString() {
         var results = "/api/collect/publicdeck/";
         
@@ -61,5 +85,10 @@ angular.module('myApp.view3', ['ngRoute'])
         }
 
         return results;
+    };
+
+    $scope.hoveringOver = function(value) {
+        $scope.overStar = value;
+        $scope.percent = 100 * (value / $scope.max);
     };
 });

@@ -106,4 +106,38 @@ describe('myApp.view3 module', function() {
           expect($scope.result).toEqual("Success!");
       });
   });
+
+  describe('public deck voting', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+          $scope = $rootScope.$new();
+          httpBackend = $httpBackend;
+          view3Ctrl = $controller('View3Ctrl', {$scope: $scope});
+          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=name").respond({"results": [{}, {}, {}]});
+          httpBackend.flush();
+      }));
+
+      it('should show error when voting on own deck', function () {
+          httpBackend.when("POST", "api/collect/vote/1/3/").respond(400, "Cannot vote on own deck");
+          $scope.current_id = 1;
+          $scope.voteDeck(3);
+          httpBackend.flush();
+          expect($scope.result).toEqual("Cannot vote on own deck");
+      });
+
+      it('should show error for invalid vote', function () {
+          httpBackend.when("POST", "api/collect/vote/1/6/").respond(400, "Invalid vote");
+          $scope.current_id = 1;
+          $scope.voteDeck(6);
+          httpBackend.flush();
+          expect($scope.result).toEqual("Invalid vote");
+      });
+
+      it('should save vote properly', function () {
+          httpBackend.when("POST", "api/collect/vote/1/3/").respond({"results": [{}, {}, {}]});
+          $scope.current_id = 1;
+          $scope.voteDeck(3);
+          httpBackend.flush();
+          expect($scope.result).toEqual("Success!");
+      });
+  });
 });

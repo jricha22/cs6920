@@ -44,6 +44,10 @@
                         </tr>
                 </tbody>
             </table>
+            <uib-rating ng-model="rating" max="max" read-only="isReadonly" on-hover="hoveringOver(value)"
+                        on-leave="overStar = null" titles="['one','two','three','four','five']"
+                        aria-labelledby="default-rating" ng-click="voteDeck(rating)"></uib-rating>
+            <div id="my_error" ng-hide="result == 'Success!'">{{ result }}</div>
         </div>
     </div>
 </div>

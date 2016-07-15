@@ -156,6 +156,13 @@ describe('myApp.view2 module', function() {
           httpBackend.flush();
           expect($scope.publishresult).toEqual("User already has a published deck! Delete old one first!");
       });
+
+      it('should successfully stop sharing deck', function () {
+          httpBackend.when("DELETE", '/api/collect/publish-deck/deckname/').respond(200, 'User already has a published deck! Delete old one first!');
+          $scope.stopSharingDeck();
+          httpBackend.flush();
+          expect($scope.publishresult).toEqual("Deck Successfully Deleted.");
+      });
   });
 
 });

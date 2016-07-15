@@ -108,4 +108,17 @@ angular.module('myApp.view2', ['ngRoute', 'zingchart-angularjs'])
                 }
         });
     }
+    
+    $scope.stopSharingDeck = function () {
+        $http({
+				url: "/api/collect/publish-deck/deckname/",
+                dataType: 'json',
+				method: 'DELETE',
+        }).success(function () {
+                $scope.publishresult = "Deck Successfully Deleted.";
+                $scope.updateCards();
+        }).error(function (error, status) {
+                $scope.publishresult = "I'm sorry, an occurred while processing your request. Please try again!";
+        });
+    }
 });

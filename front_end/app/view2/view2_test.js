@@ -20,6 +20,7 @@ describe('myApp.view2 module', function() {
         $scope = $rootScope.$new();
         httpBackend = $httpBackend;
         httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+        httpBackend.when("GET", '/api/collect/publish-deck/somerequest/').respond(200, '');
         pageCtrl = $controller('View2Ctrl', {$scope: $scope });
         httpBackend.flush();
       }));
@@ -70,6 +71,7 @@ describe('myApp.view2 module', function() {
           $scope = $rootScope.$new();
           httpBackend = $httpBackend;
           httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          httpBackend.when("GET", '/api/collect/publish-deck/somerequest/').respond(200, '');
           pageCtrl = $controller('View2Ctrl', {$scope: $scope});
           httpBackend.flush();
       }));
@@ -92,6 +94,7 @@ describe('myApp.view2 module', function() {
           $scope = $rootScope.$new();
           httpBackend = $httpBackend;
           httpBackend.when("GET", "/api/collect/deck/").respond({"color_spread": "Black:33, Blue:0, Colorless:0, Green:0, Red:33, White:33"});
+          httpBackend.when("GET", '/api/collect/publish-deck/somerequest/').respond(200, '');
           pageCtrl = $controller('View2Ctrl', {$scope: $scope});
           httpBackend.flush();
       }));
@@ -107,6 +110,7 @@ describe('myApp.view2 module', function() {
           $scope = $rootScope.$new();
           httpBackend = $httpBackend;
           httpBackend.when("GET", "/api/collect/deck/").respond({"type_spread": "Land: 0, Instant: 0, Enchantment: 0, Sorcery: 25, Artifact: 0, Creature: 75, Planeswalker: 0"});
+          httpBackend.when("GET", '/api/collect/publish-deck/somerequest/').respond(200, '');
           pageCtrl = $controller('View2Ctrl', {$scope: $scope});
           httpBackend.flush();
       }));
@@ -122,6 +126,7 @@ describe('myApp.view2 module', function() {
           $scope = $rootScope.$new();
           httpBackend = $httpBackend;
           httpBackend.when("GET", "/api/collect/deck/").respond({"mana_curve": "1, 2, 5, 1, 4, 1, 3, 1, 5, 2"});
+          httpBackend.when("GET", '/api/collect/publish-deck/somerequest/').respond(200, '');
           pageCtrl = $controller('View2Ctrl', {$scope: $scope});
           httpBackend.flush();
       }));
@@ -137,6 +142,7 @@ describe('myApp.view2 module', function() {
           $scope = $rootScope.$new();
           httpBackend = $httpBackend;
           httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          httpBackend.when("GET", '/api/collect/publish-deck/somerequest/').respond(200, '');
           pageCtrl = $controller('View2Ctrl', {$scope: $scope});
           httpBackend.flush();
       }));
@@ -162,6 +168,40 @@ describe('myApp.view2 module', function() {
           $scope.stopSharingDeck();
           httpBackend.flush();
           expect($scope.publishresult).toEqual("Deck Successfully Deleted.");
+      });
+  });
+
+    describe('Controller checkshareddeck', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+          $scope = $rootScope.$new();
+          httpBackend = $httpBackend;
+          httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          httpBackend.when("GET", '/api/collect/publish-deck/somerequest/').respond(200, '');
+          pageCtrl = $controller('View2Ctrl', {$scope: $scope});
+          httpBackend.flush();
+      }));
+
+      it('should return true for a shared deck', function () {
+          $scope.checkForDeck();
+          httpBackend.flush();
+          expect($scope.deckshared).toEqual(true);
+      });
+  });
+
+    describe('Controller checkshareddeck', function() {
+      beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+          $scope = $rootScope.$new();
+          httpBackend = $httpBackend;
+          httpBackend.when("GET", "/api/collect/deck/").respond({"cards": [{}, {}, {}]});
+          httpBackend.when("GET", '/api/collect/publish-deck/somerequest/').respond(400, '');
+          pageCtrl = $controller('View2Ctrl', {$scope: $scope});
+          httpBackend.flush();
+      }));
+
+      it('should return false for deck not shared', function () {
+          $scope.checkForDeck();
+          httpBackend.flush();
+          expect($scope.deckshared).toEqual(false);
       });
   });
 

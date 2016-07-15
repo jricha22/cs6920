@@ -109,8 +109,8 @@
 
     <zingchart id="myChart" zc-json="myCurve" zc-height=500 zc-width=600></zingchart>
 
-    <div style="max-width: 300px;">
-    <h4>Share this deck publicly</h4>
+    <div style="max-width: 300px;" ng-hide="deckshared">
+    <h4 align="center">Share this deck publicly</h4>
     <form class="form" ng-submit="publishDeck()">
             <div class="form-group">
                 <input type="text" class="form-control" ng-model="deckname" required placeholder="Deck Name"
@@ -121,8 +121,10 @@
                 <div id="my_error">{{ publishresult }}</div>
             </div>
         </form>
-
-    <button class="btn btn-primary btn-block" id="stopsharingdeck" ng-click="stopSharingDeck()">Stop Sharing Deck</button>
+    </div>
+    <div style="max-width: 300px;" ng-show="deckshared">
+        <h4 align="center">This deck is shared publicly</h4>
+        <button class="btn btn-primary btn-block" id="stopsharingdeck" ng-click="stopSharingDeck()">Stop Sharing Deck</button>
         </div>
     <br>
 </div>

@@ -255,6 +255,13 @@ class PublishDeckView(APIView):
         PublicDeck.objects.filter(user=request.user).delete()
         return Response("Published deck removed", status=status.HTTP_200_OK)
 
+    @staticmethod
+    def get(request, name, format=None):
+        if PublicDeck.objects.filter(user=request.user).exists():
+            return Response("User has already shared a deck", status=status.HTTP_200_OK)
+        else:
+            return Response("User has not shared a deck", status=status.HTTP_400_BAD_REQUEST)
+
 
 class PublicDeckViewSet(viewsets.ModelViewSet):
     """

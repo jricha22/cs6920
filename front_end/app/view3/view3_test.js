@@ -23,7 +23,7 @@ describe('myApp.view3 module', function() {
       }));
 
       it('should show decks properly', function () {
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=name").respond({"results": [{}, {}, {}], "count": 1});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=name").respond({"results": [{}, {}, {}], "count": 1});
           $scope.updatePublicDecks();
           httpBackend.flush();
           expect($scope.result).toEqual("Success!");
@@ -35,12 +35,12 @@ describe('myApp.view3 module', function() {
           $scope = $rootScope.$new();
           httpBackend = $httpBackend;
           view3Ctrl = $controller('View3Ctrl', {$scope: $scope});
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=name").respond({"results": [{}, {}, {}]});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=name").respond({"results": [{}, {}, {}]});
           httpBackend.flush();
       }));
 
       it('should get selected deck properly', function () {
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=name").respond({"results": [{}, {}, {}]});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=name").respond({"results": [{}, {}, {}]});
           httpBackend.when("GET", "api/collect/get-public-deck/1/").respond({"results": [{}, {}, {}]});
           $scope.updatePublicDecks();
           $scope.selectDeck(1);
@@ -49,7 +49,7 @@ describe('myApp.view3 module', function() {
       });
     
       it('should fail with 400 properly', function () {
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=name").respond({"results": [{}, {}, {}]});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=name").respond({"results": [{}, {}, {}]});
           httpBackend.when("GET", "api/collect/get-public-deck/100/").respond(400, 'Error Occurred');
           $scope.updatePublicDecks();
           $scope.selectDeck(100);
@@ -70,19 +70,19 @@ describe('myApp.view3 module', function() {
           $scope = $rootScope.$new();
           httpBackend = $httpBackend;
           view3Ctrl = $controller('View3Ctrl', {$scope: $scope});
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=name").respond({"results": [{}, {}, {}]});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=name").respond({"results": [{}, {}, {}]});
           httpBackend.flush();
       }));
 
       it('should order default properly', function () {
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=name").respond({"results": [{}, {}, {}]});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=name").respond({"results": [{}, {}, {}]});
           $scope.updatePublicDecks();
           httpBackend.flush();
           expect($scope.result).toEqual("Success!");
       });
 
       it('should order reverse name properly', function () {
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=-name").respond({"results": [{}, {}, {}]});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=-name").respond({"results": [{}, {}, {}]});
           $scope.sortReverse = true;
           $scope.updatePublicDecks();
           httpBackend.flush();
@@ -90,7 +90,7 @@ describe('myApp.view3 module', function() {
       });
 
       it('should order rating properly', function () {
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=average_rating").respond({"results": [{}, {}, {}]});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=average_rating").respond({"results": [{}, {}, {}]});
           $scope.sortType = 'average_rating';
           $scope.updatePublicDecks();
           httpBackend.flush();
@@ -98,7 +98,7 @@ describe('myApp.view3 module', function() {
       });
 
       it('should order reverse rating properly', function () {
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=-average_rating").respond({"results": [{}, {}, {}]});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=-average_rating").respond({"results": [{}, {}, {}]});
           $scope.sortReverse = true;
           $scope.sortType = 'average_rating';
           $scope.updatePublicDecks();
@@ -112,7 +112,7 @@ describe('myApp.view3 module', function() {
           $scope = $rootScope.$new();
           httpBackend = $httpBackend;
           view3Ctrl = $controller('View3Ctrl', {$scope: $scope});
-          httpBackend.when("GET", "/api/collect/publicdeck/?ordering=name").respond({"results": [{}, {}, {}]});
+          httpBackend.when("GET", "/api/collect/publicdeck/?limit=10&offset=0&ordering=name").respond({"results": [{}, {}, {}]});
           httpBackend.flush();
       }));
 

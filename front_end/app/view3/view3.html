@@ -25,6 +25,7 @@
                     </tr>
                 </tbody>
             </table>
+            <uib-pagination id="pagination" total-items="totalServerItems" ng-model="pagingOptions.currentPage" ng-change="updatePublicDecks()" max-size="maxSize" class="pagination-sm" boundary-links="true" force-ellipses="true"></uib-pagination>
         </div>
         <div id="publicDeckDivRight" ng-show="current_name != ''">
             <h4> {{ current_name }}</h4>

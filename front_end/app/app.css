@@ -24,6 +24,9 @@ h3 {
     margin: 0 auto;
     display: block;
 }
+#pagination {
+    float: left;
+}
 
 .pagination-sm {
     float: right;

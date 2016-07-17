@@ -18,8 +18,16 @@ angular.module('myApp.view3', ['ngRoute'])
     $scope.result = "";
 
     $scope.rating = 0;
-    $scope.max = 5;
+    $scope.max = 5;    //max rating
     $scope.isReadonly = false;
+
+    $scope.totalServerItems = 0;
+    $scope.maxSize = 5;   //pagination size
+
+    $scope.pagingOptions = {
+        pageSize: 10,
+        currentPage: 1
+    };
     
     $scope.updatePublicDecks = function () {
         var results = generateApiString();
@@ -75,13 +83,15 @@ angular.module('myApp.view3', ['ngRoute'])
     };
 
     function generateApiString() {
-        var results = "/api/collect/publicdeck/";
+        var pageSize = $scope.pagingOptions.pageSize;
+        var page = $scope.pagingOptions.currentPage;
+        var results = "/api/collect/publicdeck/?limit=" + pageSize + "&offset=" + (page - 1) * pageSize;
         
         if ($scope.sortReverse) {
-            results += "?ordering=-" + $scope.sortType;
+            results += "&ordering=-" + $scope.sortType;
         }
         else {
-            results += "?ordering=" + $scope.sortType;
+            results += "&ordering=" + $scope.sortType;
         }
 
         return results;

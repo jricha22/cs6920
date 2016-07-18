@@ -21,12 +21,12 @@ angular.module('myApp.view3', ['ngRoute'])
     $scope.max = 5;    //max rating
     $scope.isReadonly = false;
 
-    $scope.totalServerItems = 0;
-    $scope.maxSize = 5;   //pagination size
+    $scope.maxSize = 5;   //# of pagination pages shown on the bar
 
     $scope.pagingOptions = {
         pageSize: 10,
-        currentPage: 1
+        currentPage: 1,
+        totalServerItems: 0
     };
     
     $scope.updatePublicDecks = function () {
@@ -34,6 +34,7 @@ angular.module('myApp.view3', ['ngRoute'])
         $http.get(results).success(function (result) {
             $scope.myDecks = result['results'];
             $scope.result = "Success!";
+            $scope.pagingOptions.totalServerItems = result['count'];
         }).error(function (error, status) {
             if (status === 400) {
                 $scope.result = error;
